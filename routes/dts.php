@@ -45,6 +45,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/{document}/complete', [DocumentController::class, 'complete'])->name('complete');
         Route::get('/completed', [DocumentController::class, 'completed'])->name('completed');
+
+        Route::get('/transit', [DocumentController::class, 'transit'])->name('transit');
+
+        Route::post('/transmittal', [DocumentController::class, 'generateTransmittal'])->name('transmittal');
         // Show Single Document Details & Routing History
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
     });

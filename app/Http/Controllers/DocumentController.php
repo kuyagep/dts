@@ -402,4 +402,41 @@ class DocumentController extends Controller
 
         return view('documents.completed', compact('documents'));
     }
+
+    /**
+     * Display list of documents currently in transit dispatched by the user's office.
+     */
+    public function transit()
+    {
+        $user = auth()->user();
+
+        // Fetch documents where the active route from the user's office is 'In Transit'
+        $documents = Document::where('status', 'In Transit')
+            ->whereHas('routes', function ($query) use ($user) {
+                $query->where('from_office_id', $user->office_id)
+                    ->where('status', 'In Transit');
+            })
+            ->with(['documentType', 'currentOffice', 'creator'])
+            ->latest()
+            ->paginate(10);
+
+        return view('documents.transit', compact('documents'));
+    }
+
+    /**
+     * Generate printable batch transmittal slip for selected documents.
+     */
+    public function generateTransmittal(Request $request)
+    {
+        $validated = $request->validate([
+            'document_ids'   => 'required|array|min:1',
+            'document_ids.*' => 'exists:documents,id',
+        ]);
+
+        $documents = Document::whereIn('id', $validated['document_ids'])
+            ->with(['documentType', 'currentOffice', 'originatingOffice', 'creator'])
+            ->get();
+
+        return view('documents.print_transmittal', compact('documents'));
+    }
 }

@@ -39,6 +39,14 @@ class Document extends Model
     }
 
     /**
+     * Get the office where the document is intended to go.
+     */
+    public function destinationOffice(): BelongsTo
+    {
+        return $this->belongsTo(Office::class, 'destination_office_id');
+    }
+
+    /**
      * Get the user who created the document record.
      */
     public function creator(): BelongsTo

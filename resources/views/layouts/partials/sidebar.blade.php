@@ -33,6 +33,31 @@
                 </a>
             </li>
 
+            <!-- In Transit Queue -->
+            <li class="sidebar-item {{ request()->routeIs('documents.transit') ? 'active' : '' }}">
+                <a class="sidebar-link d-flex justify-content-between align-items-center"
+                    href="{{ route('documents.transit') }}">
+                    <div>
+                        <i class="align-middle" data-feather="send"></i>
+                        <span class="align-middle">In Transit Queue</span>
+                    </div>
+                    @php
+                        $officeId = auth()->user()->office_id ?? null;
+
+                        $transitCount = $officeId
+                            ? \App\Models\Document::where('status', 'In Transit')
+                                ->whereHas('routes', function ($q) use ($officeId) {
+                                    $q->where('from_office_id', $officeId)->where('status', 'In Transit');
+                                })
+                                ->count()
+                            : 0;
+                    @endphp
+                    @if ($transitCount > 0)
+                        <span class="badge bg-info text-dark rounded-pill">{{ $transitCount }}</span>
+                    @endif
+                </a>
+            </li>
+
 
             <!-- Incoming Queue -->
             <li class="sidebar-item {{ request()->routeIs('documents.incoming') ? 'active' : '' }}">
