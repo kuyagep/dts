@@ -14,9 +14,9 @@
     </div>
 
     <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th>Type Name</th>
@@ -38,12 +38,19 @@
                                 </td>
                                 <td><small class="text-muted">{{ $type->created_at->format('M d, Y') }}</small></td>
                                 <td class="text-end pe-3">
+                                    <!-- Edit Button (Triggers Modal & Populates Data via JS) -->
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-1 edit-btn"
+                                        data-id="{{ $type->id }}" data-name="{{ $type->name }}"
+                                        data-is_active="{{ $type->is_active }}">
+                                        <i data-feather="edit-2" class="feather-sm"></i>
+                                    </button>
+
+                                    <!-- Delete Form with SweetAlert2 Hook -->
                                     <form action="{{ route('document-types.destroy', $type->id) }}" method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Are you sure you want to delete this document type?')">
+                                        class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn">
                                             <i data-feather="trash-2" class="feather-sm"></i>
                                         </button>
                                     </form>
@@ -57,12 +64,14 @@
                     </tbody>
                 </table>
             </div>
+
+            @if ($documentTypes->hasPages())
+                <div class="card-footer bg-white border-top py-3">
+                    {{ $documentTypes->links() }}
+                </div>
+            @endif
         </div>
-        @if ($documentTypes->hasPages())
-            <div class="card-footer bg-white border-top py-3">
-                {{ $documentTypes->links() }}
-            </div>
-        @endif
+
     </div>
 
     <!-- Modal: Create Document Type -->
@@ -86,11 +95,7 @@
                                     class="text-danger">*</span></label>
                             <input type="text" name="code" class="form-control" placeholder="e.g. PR" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label font-weight-bold">Description</label>
-                            <textarea name="description" class="form-control" rows="3"
-                                placeholder="Brief details about this document classification..."></textarea>
-                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -100,4 +105,89 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal: Edit Document Type -->
+    <div class="modal fade" id="editDocumentTypeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editDocumentTypeForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Document Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Type Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="edit_name" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Status</label>
+                            <select name="is_active" id="edit_is_active" class="form-select">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Document Type</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Populate Edit Modal Data
+            const editModal = new bootstrap.Modal(document.getElementById('editDocumentTypeModal'));
+
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const isActive = this.dataset.is_active;
+
+                    // Set Form Action URL dynamically
+                    document.getElementById('editDocumentTypeForm').action =
+                        `/document-types/${id}`;
+
+                    // Fill Form Fields
+                    document.getElementById('edit_name').value = name;
+                    document.getElementById('edit_is_active').value = isActive;
+
+                    editModal.show();
+                });
+            });
+
+            // 2. SweetAlert2 Delete Confirmation
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.delete-form');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This action will delete this document type!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+        });
+    </script>
+@endpush
