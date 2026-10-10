@@ -44,7 +44,7 @@
                     </div>
                     @php
                         $incomingCount = \App\Models\Document::where(
-                            'current_office_id',
+                            'destination_office_id',
                             auth()->user()->office_id ?? null,
                         )
                             ->where('status', 'In Transit')

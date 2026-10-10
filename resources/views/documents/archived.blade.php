@@ -71,7 +71,7 @@
                                 <td class="text-end pe-3">
                                     <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-outline-primary"
                                         title="View Document File & Logs">
-                                        <i data-feather="eye" class="feather-sm"></i> Inspect
+                                        <i data-feather="eye" class="feather-sm"></i> Track
                                     </a>
                                 </td>
                             </tr>

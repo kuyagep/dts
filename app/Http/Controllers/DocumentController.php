@@ -141,6 +141,7 @@ class DocumentController extends Controller
                 'status' => 'In Transit',
                 'originating_office_id' => $user->office_id,
                 'current_office_id' => $user->office_id,
+                'destination_office_id' => $validated['destination_office_id'],
                 'created_by' => $user->id,
                 'current_custodian_id' => $user->id,
             ]);
@@ -252,6 +253,7 @@ class DocumentController extends Controller
                 'status' => 'Received',
                 'current_office_id' => $user->office_id,
                 'current_custodian_id' => $user->id,
+
             ]);
 
             // Record in audit log
@@ -286,6 +288,7 @@ class DocumentController extends Controller
                 'status' => 'In Transit',
                 'current_office_id' => $validated['to_office_id'],
                 'current_custodian_id' => null, // Pending intake by target office clerk
+                'destination_office_id' => $validated['to_office_id'],
             ]);
 
             // Create route transition history

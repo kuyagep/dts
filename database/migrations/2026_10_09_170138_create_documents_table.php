@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignUuid('originating_office_id')->constrained('offices')->restrictOnDelete();
 
             $table->foreignUuid('current_office_id')->nullable()->constrained('offices')->nullOnDelete();
+            $table->foreignUuid('destination_office_id')->nullable()->constrained('offices')->nullOnDelete();
             $table->foreignUuid('created_by')->constrained('users');
             $table->foreignUuid('current_custodian_id')->nullable()->constrained('users')->nullOnDelete();
 
