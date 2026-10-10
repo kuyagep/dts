@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignUuid('document_id')->constrained('documents')->cascadeOnDelete();
             $table->integer('step_number');
 
-            $table->foreignUuid('from_division_id')->constrained('divisions');
-            $table->foreignUuid('to_division_id')->constrained('divisions');
+            $table->foreignUuid('from_office_id')->constrained('offices');
+            $table->foreignUuid('to_office_id')->constrained('offices');
             $table->foreignUuid('assigned_user_id')->nullable()->constrained('users');
 
             $table->enum('status', ['Pending', 'In Transit', 'Received', 'Completed', 'Bypassed'])->default('Pending');

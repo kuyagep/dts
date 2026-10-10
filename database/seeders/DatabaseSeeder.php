@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolesAndPermissionsSeeder::class, // Must run first so roles exist
+            DepartmentSeeder::class,
+            OfficeSeeder::class,
+            DocumentTypeSeeder::class,
             UserSeeder::class,
         ]);
     }

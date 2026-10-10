@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\DocumentType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
 
 class DocumentTypeSeeder extends Seeder
@@ -14,14 +14,14 @@ class DocumentTypeSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            ['name' => 'Memorandum Circular', 'code' => 'MC'],
-            ['name' => 'Purchase Request', 'code' => 'PR'],
-            ['name' => 'Disbursement Voucher', 'code' => 'DV'],
-            ['name' => 'Special Order', 'code' => 'SO'],
+            ['name' => 'Memorandum Circular'],
+            ['name' => 'Purchase Request'],
+            ['name' => 'Disbursement Voucher'],
+            ['name' => 'Special Order'],
         ];
 
         foreach ($types as $type) {
-            DocumentType::firstOrCreate(['code' => $type['code']], $type);
+            DocumentType::firstOrCreate(['name' => $type['name']]);
         }
     }
 }

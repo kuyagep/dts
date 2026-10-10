@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="author" content="Geperson Mamalias">
     <title>@yield('title', 'Dashboard') | Division Document Tracking System</title>
 
     <!-- AdminKit CSS -->
@@ -51,17 +51,8 @@
             </main>
 
             <!-- Footer -->
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row text-muted">
-                        <div class="col-6 text-start">
-                            <p class="mb-0">
-                                <strong>Division Doc Tracker</strong> &copy; {{ date('Y') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            @include('layouts.partials.footer')
+
         </div>
     </div>
 

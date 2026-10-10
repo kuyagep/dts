@@ -49,4 +49,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the office associated with the user.
+     */
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
 }
