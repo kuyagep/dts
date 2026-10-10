@@ -37,8 +37,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{document}/forward', [DocumentController::class, 'forward'])->name('forward');
         Route::post('/{document}/approve', [DocumentController::class, 'approve'])->name('approve');
         Route::post('/{document}/archive', [DocumentController::class, 'archive'])->name('archive');
+        Route::get('/pending', [DocumentController::class, 'pending'])->name('pending');
+        Route::post('/{document}/release', [DocumentController::class, 'release'])->name('release');
+        Route::post('/{document}/archive', [DocumentController::class, 'archive'])->name('archive');
 
+        Route::get('/forwarded', [DocumentController::class, 'forwarded'])->name('forwarded');
 
+        Route::post('/{document}/complete', [DocumentController::class, 'complete'])->name('complete');
+        Route::get('/completed', [DocumentController::class, 'completed'])->name('completed');
         // Show Single Document Details & Routing History
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
     });

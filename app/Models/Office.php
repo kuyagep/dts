@@ -28,4 +28,9 @@ class Office extends Model
     {
         return $this->hasMany(Document::class, 'originating_office_id');
     }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(DocumentLog::class);
+    }
 }

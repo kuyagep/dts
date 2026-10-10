@@ -42,13 +42,21 @@
                                 </td>
                                 <td><small class="text-muted">{{ $user->created_at->format('M d, Y') }}</small></td>
                                 <td class="text-end pe-3">
+                                    <!-- Edit Button (Triggers Modal & Populates Data) -->
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-1 edit-user-btn"
+                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                        data-email="{{ $user->email }}" data-office_id="{{ $user->office_id }}"
+                                        data-role="{{ $user->roles->first()->name ?? '' }}">
+                                        <i data-feather="edit-2" class="feather-sm"></i>
+                                    </button>
+
                                     @if ($user->id !== auth()->id())
+                                        <!-- SweetAlert2 Delete Form -->
                                         <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                            class="d-inline"
-                                            onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                            class="d-inline delete-user-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <button type="button" class="btn btn-sm btn-outline-danger delete-user-btn">
                                                 <i data-feather="trash-2" class="feather-sm"></i>
                                             </button>
                                         </form>
@@ -126,4 +134,116 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal: Edit User -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editUserForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit User Account</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Full Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="name" id="edit_user_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Email Address <span
+                                    class="text-danger">*</span></label>
+                            <input type="email" name="email" id="edit_user_email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Assigned Office <span
+                                    class="text-danger">*</span></label>
+                            <select name="office_id" id="edit_user_office_id" class="form-select" required>
+                                <option value="" disabled>Select office...</option>
+                                @foreach ($offices as $office)
+                                    <option value="{{ $office->id }}">{{ $office->name }} ({{ $office->code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Assign Role <span
+                                    class="text-danger">*</span></label>
+                            <select name="role" id="edit_user_role" class="form-select" required>
+                                <option value="" disabled>Select role...</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">New Password</label>
+                            <input type="password" name="password" class="form-control"
+                                placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Modal trigger & data populator
+            const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+
+            document.querySelectorAll('.edit-user-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const email = this.dataset.email;
+                    const officeId = this.dataset.office_id;
+                    const role = this.dataset.role;
+
+                    // Dynamically assign form update route
+                    document.getElementById('editUserForm').action = `/users/${id}`;
+
+                    // Populate inputs
+                    document.getElementById('edit_user_name').value = name;
+                    document.getElementById('edit_user_email').value = email;
+                    document.getElementById('edit_user_office_id').value = officeId;
+                    document.getElementById('edit_user_role').value = role;
+
+                    editUserModal.show();
+                });
+            });
+
+            // 2. SweetAlert2 Delete Confirmation
+            document.querySelectorAll('.delete-user-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.delete-user-form');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This action will permanently delete this user account!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete user!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endpush

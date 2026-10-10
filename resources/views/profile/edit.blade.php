@@ -58,11 +58,11 @@
 
         <!-- Right Column: Settings Forms -->
         <div class="col-md-8 col-xl-9">
-            <!-- Update Personal Information -->
+            <!-- Update Personal Information & Office Assignment -->
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white border-bottom">
                     <h5 class="card-title mb-0"><i data-feather="user" class="feather-sm me-1 text-primary"></i> Personal
-                        Information</h5>
+                        Information & Office</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('profile.update-info') }}" method="POST">
@@ -70,6 +70,7 @@
                         @method('PUT')
 
                         <div class="row g-3">
+                            <!-- Full Name -->
                             <div class="col-md-6">
                                 <label for="name" class="form-label font-weight-bold">Full Name <span
                                         class="text-danger">*</span></label>
@@ -80,6 +81,7 @@
                                 @enderror
                             </div>
 
+                            <!-- Email Address -->
                             <div class="col-md-6">
                                 <label for="email" class="form-label font-weight-bold">Email Address <span
                                         class="text-danger">*</span></label>
@@ -89,11 +91,30 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <!-- Assigned Office Dropdown -->
+                            <div class="col-md-12">
+                                <label for="office_id" class="form-label font-weight-bold">Assigned Office / Station <span
+                                        class="text-danger">*</span></label>
+                                <select name="office_id" id="office_id"
+                                    class="form-select @error('office_id') is-invalid @enderror" required>
+                                    <option value="" disabled>Select office...</option>
+                                    @foreach ($offices as $office)
+                                        <option value="{{ $office->id }}"
+                                            {{ old('office_id', $user->office_id) == $office->id ? 'selected' : '' }}>
+                                            {{ $office->name }} ({{ $office->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('office_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary">
-                                <i data-feather="save" class="feather-sm me-1"></i> Save Changes
+                                <i data-feather="save" class="feather-sm me-1"></i> Save Profile
                             </button>
                         </div>
                     </form>

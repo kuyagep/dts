@@ -30,7 +30,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:6',
             'office_id' => 'required|exists:offices,id',
             'role' => 'required|exists:roles,name',
         ]);
@@ -46,7 +46,35 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User account created successfully!');
     }
+    /**
+     * Update the specified user in storage.
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|max:255|unique:users,email,' . $user->id,
+            'office_id' => 'required|exists:offices,id',
+            'role'      => 'required|exists:roles,name',
+            'password'  => 'nullable|string|min:8',
+        ]);
 
+        $userData = [
+            'name'      => $validated['name'],
+            'email'     => $validated['email'],
+            'office_id' => $validated['office_id'],
+        ];
+
+        // Only update password if provided
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($userData);
+        $user->syncRoles([$validated['role']]);
+
+        return redirect()->route('users.index')->with('success', 'User account updated successfully!');
+    }
     /**
      * Remove the specified user from storage.
      */

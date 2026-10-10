@@ -28,4 +28,9 @@ class DocumentLog extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function office(): BelongsTo
+    {
+        return $this->belongsTo(Office::class);
+    }
 }

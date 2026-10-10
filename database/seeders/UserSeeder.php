@@ -45,9 +45,17 @@ class UserSeeder extends Seeder
         );
         $clerk->assignRole('Clerk');
 
-        // 2. Create Random Demo Users & Assign Default Role
-        User::factory(10)->create()->each(function (User $user) {
+        $offices = \App\Models\Office::all();
+        foreach ($offices as $office) {
+            $user = User::firstOrCreate(
+                ['email' => strtolower($office->code) . '@gmail.com'],
+                [
+                    'name' => $office->name . ' User',
+                    'password' => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
             $user->assignRole('User');
-        });
+        }
     }
 }

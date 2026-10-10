@@ -42,7 +42,7 @@
                                     @foreach ($documentTypes as $type)
                                         <option value="{{ $type->id }}"
                                             {{ old('document_type_id') == $type->id ? 'selected' : '' }}>
-                                            {{ $type->name }} ({{ $type->code }})
+                                            {{ $type->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -53,18 +53,18 @@
 
                             <!-- Urgency Level -->
                             <div class="col-md-6">
-                                <label for="urgency" class="form-label font-weight-bold">Urgency Level <span
+                                <label for="priority" class="form-label font-weight-bold">Priority Level <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select @error('urgency') is-invalid @enderror" id="urgency"
-                                    name="urgency" required>
-                                    <option value="Normal" {{ old('urgency', 'Normal') == 'Normal' ? 'selected' : '' }}>
+                                <select class="form-select @error('priority') is-invalid @enderror" id="urgency"
+                                    name="priority" required>
+                                    <option value="Normal" {{ old('priority', 'Normal') == 'Normal' ? 'selected' : '' }}>
                                         Normal (Standard Processing)</option>
-                                    <option value="Urgent" {{ old('urgency') == 'Urgent' ? 'selected' : '' }}>Urgent
+                                    <option value="Urgent" {{ old('priority') == 'Urgent' ? 'selected' : '' }}>Urgent
                                         (Requires Priority)</option>
-                                    <option value="Immediate" {{ old('urgency') == 'Immediate' ? 'selected' : '' }}>
+                                    <option value="Immediate" {{ old('priority') == 'Immediate' ? 'selected' : '' }}>
                                         Immediate (Action within 24 Hours)</option>
                                 </select>
-                                @error('urgency')
+                                @error('priority')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -103,18 +103,6 @@
                                 <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                     rows="3" placeholder="Brief background or purpose of the document...">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- File Upload -->
-                            <div class="col-12">
-                                <label for="attachment" class="form-label font-weight-bold">Attach Scanned Document / File
-                                    <span class="text-danger">*</span></label>
-                                <input type="file" class="form-control @error('attachment') is-invalid @enderror"
-                                    id="attachment" name="attachment" accept=".pdf,.doc,.docx,.jpg,.png" required>
-                                <div class="form-text">Accepted formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB).</div>
-                                @error('attachment')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

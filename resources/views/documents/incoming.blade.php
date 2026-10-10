@@ -25,7 +25,7 @@
                             <th>Dispatched By</th>
                             <th>Urgency</th>
                             <th>Date Forwarded</th>
-                            <th class="text-end pe-3">Action</th>
+                            <th class="text-end pe-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +72,7 @@
                                     <small class="text-muted">{{ $doc->updated_at->format('M d, Y h:i A') }}</small>
                                 </td>
 
-                                <!-- Receive Action -->
+                                <!-- Actions -->
                                 <td class="text-end pe-3">
                                     <div class="btn-group">
                                         <a href="{{ route('documents.show', $doc->id) }}"
@@ -80,12 +80,12 @@
                                             <i data-feather="eye" class="feather-sm"></i> View
                                         </a>
 
-                                        @can('documents.receive')
-                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                                data-bs-target="#receiveModal-{{ $doc->id }}">
-                                                <i data-feather="check-circle" class="feather-sm me-1"></i> Receive
-                                            </button>
-                                        @endcan
+                                        <!-- Receive Button (Triggers Intake Modal with Remarks) -->
+                                        <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
+                                            data-bs-target="#receiveModal-{{ $doc->id }}" title="Receive with Remarks">
+                                            <i data-feather="inbox" class="feather-sm me-1"></i> Receive...
+                                        </button>
+
                                     </div>
 
                                     <!-- Receive Confirmation Modal -->
@@ -105,7 +105,8 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <p class="mb-2">Are you sure you want to mark this document as
-                                                            <strong>Received</strong>?</p>
+                                                            <strong>Received</strong>?
+                                                        </p>
                                                         <div class="p-3 bg-light rounded border mb-3">
                                                             <div class="fw-bold text-primary">{{ $doc->tracking_number }}
                                                             </div>
@@ -161,4 +162,34 @@
             </div>
         @endif
     </div>
+
+
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.accept-doc-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.accept-doc-form');
+
+                    Swal.fire({
+                        title: 'Accept Document?',
+                        text: "Confirm receipt of this document into your office queue.",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#198754',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, Accept',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endpush

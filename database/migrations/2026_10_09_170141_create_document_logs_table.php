@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('document_id')->constrained('documents')->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users');
-
+            $table->foreignUuid('office_id')->nullable()->constrained('offices')->nullOnDelete();
             $table->string('action'); // CREATED, RECEIVED, FORWARDED, APPROVED, REJECTED
             $table->string('from_status')->nullable();
             $table->string('to_status')->nullable();

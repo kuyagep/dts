@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Office;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,8 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = auth()->user()->load('office.department', 'roles');
-        return view('profile.edit', compact('user'));
+        $offices = Office::where('is_active', true)->orderBy('name')->get();
+        return view('profile.edit', compact('user', 'offices'));
     }
 
     /**
@@ -32,6 +34,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'office_id' => 'required|exists:offices,id',
         ]);
 
         $user->update($validated);
