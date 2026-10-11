@@ -24,16 +24,21 @@ class DepartmentController extends Controller
         return redirect()->route('departments.index')->with('success', 'Department created successfully!');
     }
 
+    /**
+     * Update the specified department in storage.
+     */
     public function update(Request $request, Department $department)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'is_active' => 'required|boolean',
+            'code'        => 'required|string|max:20|unique:departments,code,' . $department->id,
+            'name'        => 'required|string|max:255',
         ]);
+
+        $validated['is_active'] = $request->has('is_active');
 
         $department->update($validated);
 
-        return redirect()->route('departments.index')->with('success', 'Department updated successfully!');
+        return redirect()->back()->with('success', "Department '{$department->name}' updated successfully.");
     }
 
     public function destroy(Department $department)

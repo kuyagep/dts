@@ -146,9 +146,9 @@ class DocumentController extends Controller
                 'current_custodian_id' => $user->id,
             ]);
 
+
             DocumentRoute::create([
                 'document_id' => $document->id,
-                'step_number' => 1,
                 'from_office_id' => $user->office_id,
                 'to_office_id' => $validated['destination_office_id'],
                 'status' => 'In Transit',
@@ -256,6 +256,14 @@ class DocumentController extends Controller
 
             ]);
 
+            DocumentRoute::create([
+                'document_id' => $document->id,
+                'from_office_id' => $user->office_id,
+                'to_office_id' => $user->office_id,
+                'status' => 'Received',
+                'remarks' => $validated['remarks'] ?? 'Document recieved and review.',
+            ]);
+
             // Record in audit log
             DocumentLog::create([
                 'document_id' => $document->id,
@@ -290,7 +298,7 @@ class DocumentController extends Controller
                 'current_custodian_id' => null, // Pending intake by target office clerk
                 'destination_office_id' => $validated['to_office_id'],
             ]);
-
+            $officeName = Office::find($validated['to_office_id'])->name ?? 'Unknown Office';
             // Create route transition history
             DocumentRoute::create([
                 'document_id'    => $document->id,
@@ -308,7 +316,7 @@ class DocumentController extends Controller
                 'user_id'     => $user->id,
                 'office_id'   => $fromOfficeId,
                 'action'      => 'FORWARDED',
-                'remarks'     => $validated['remarks'] ?? "Forwarded to Office ID: {$validated['to_office_id']}",
+                'remarks'     => $validated['remarks'] ?? "Forwarded to Office ID: " . $officeName,
                 // 'ip_address' => $request->ip(),
             ]);
         });
@@ -372,6 +380,15 @@ class DocumentController extends Controller
             $document->update([
                 'status' => 'Completed',
                 'current_custodian_id' => $user->id,
+            ]);
+
+            DocumentRoute::create([
+                'document_id'    => $document->id,
+                'from_office_id' => $user->office_id,
+                'to_office_id'   => $user->office_id,
+                'status'   => 'Completed',
+                'remarks'        => $request->input('remarks', 'Document action completed and filed in office.'),
+
             ]);
 
             // Create entry in Audit Log
@@ -438,5 +455,34 @@ class DocumentController extends Controller
             ->get();
 
         return view('documents.print_transmittal', compact('documents'));
+    }
+
+    /**
+     * Display a list of documents authored/created by the logged-in user.
+     */
+    public function myDocuments(Request $request)
+    {
+        $user = auth()->user();
+
+        $query = Document::where('created_by', $user->id)
+            ->with(['documentType', 'currentOffice', 'originatingOffice']);
+
+        // Optional status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Optional search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_number', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+            });
+        }
+
+        $documents = $query->latest()->paginate(10);
+
+        return view('documents.my_documents', compact('documents'));
     }
 }

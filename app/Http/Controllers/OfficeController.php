@@ -41,17 +41,17 @@ class OfficeController extends Controller
     public function update(Request $request, Office $office)
     {
         $validated = $request->validate([
+            'code'          => 'required|string|max:20|unique:offices,code,' . $office->id,
+            'name'          => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:20|unique:offices,code,' . $office->id,
-            'is_active' => 'required|boolean',
         ]);
+
+        $validated['is_active'] = $request->has('is_active');
 
         $office->update($validated);
 
-        return redirect()->route('offices.index')->with('success', 'Office updated successfully!');
+        return redirect()->back()->with('success', "Office '{$office->name}' updated successfully.");
     }
-
     /**
      * Remove the specified office from storage.
      */

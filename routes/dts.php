@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transit', [DocumentController::class, 'transit'])->name('transit');
 
         Route::post('/transmittal', [DocumentController::class, 'generateTransmittal'])->name('transmittal');
+
+        Route::get('/my-documents', [DocumentController::class, 'myDocuments'])->name('my-documents');
         // Show Single Document Details & Routing History
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
     });

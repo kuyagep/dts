@@ -108,6 +108,22 @@
                     <span class="align-middle">Forwarded Queue</span>
                 </a>
             </li>
+            <!-- My Created Documents -->
+            <li class="sidebar-item {{ request()->routeIs('documents.my-documents') ? 'active' : '' }}">
+                <a class="sidebar-link d-flex justify-content-between align-items-center"
+                    href="{{ route('documents.my-documents') }}">
+                    <div>
+                        <i class="align-middle" data-feather="folder"></i>
+                        <span class="align-middle">My Documents</span>
+                    </div>
+                    @php
+                        $myDocsCount = \App\Models\Document::where('created_by', auth()->id())->count();
+                    @endphp
+                    @if ($myDocsCount > 0)
+                        <span class="badge bg-secondary rounded-pill">{{ $myDocsCount }}</span>
+                    @endif
+                </a>
+            </li>
             <!-- Master Document Index -->
             <li class="sidebar-item {{ request()->routeIs('documents.index') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('documents.index') }}">

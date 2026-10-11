@@ -3,24 +3,25 @@
 @section('title', 'In Transit Documents')
 
 @section('content')
+
+
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <h1 class="h3 mb-0">In Transit Documents</h1>
-                <p class="text-muted mb-0">
-                    Documents dispatched from <strong>{{ auth()->user()->office->name ?? 'Your Office' }}</strong> currently
-                    awaiting receipt at destination offices.
-                </p>
-            </div>
-            <div>
-                <!-- Print Transmittal Slip Button -->
-                <button type="button" id="printTransmittalBtn" class="btn btn-primary" disabled>
-                    <i data-feather="printer" class="feather-sm me-1"></i> Print Transmittal (<span
-                        id="selectedCount">0</span>)
-                </button>
-                <iframe id="printFrame" name="printFrame" style="display: none; width: 0; height: 0; border: 0;"></iframe>
-            </div>
+        <div>
+            <h1 class="h3 mb-0">In Transit Documents</h1>
+            <p class="text-muted mb-0">
+                Documents dispatched from <strong>{{ auth()->user()->office->name ?? 'Your Office' }}</strong> currently
+                awaiting receipt at destination offices.
+            </p>
         </div>
+
+
+        <!-- Print Transmittal Slip Button -->
+        <button type="button" id="printTransmittalBtn" class="btn btn-primary" disabled>
+            <i data-feather="printer" class="feather-sm me-1"></i> Print Transmittal (<span id="selectedCount">0</span>)
+        </button>
+        <iframe id="printFrame" name="printFrame" style="display: none; width: 0; height: 0; border: 0;"></iframe>
+
+
     </div>
 
     <div class="card shadow-sm border-0">
@@ -248,7 +249,8 @@
                         .catch(error => {
                             console.error('Print Error:', error);
                             alert(
-                                'An error occurred while generating the transmittal slip. Please try again.');
+                                'An error occurred while generating the transmittal slip. Please try again.'
+                            );
                             printBtn.innerHTML = originalText;
                             updateButtonState();
                         });

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('document_routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('document_id')->constrained('documents')->cascadeOnDelete();
-            $table->integer('step_number');
+            // $table->integer('step_number');
 
             $table->foreignUuid('from_office_id')->constrained('offices');
             $table->foreignUuid('to_office_id')->constrained('offices');

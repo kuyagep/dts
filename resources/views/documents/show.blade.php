@@ -163,44 +163,28 @@
         <div class="col-lg-4">
             <!-- Verification QR Code Card -->
             <div class="card shadow-sm border-0 mb-4 text-center">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="card-title mb-0">Tracking QR Code</h5>
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="card-title mb-0 fw-bold text-dark">
+                        <i data-feather="qr-code" class="feather-sm me-1 text-primary"></i> Tracking QR Code
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="p-3 bg-white d-inline-block rounded border mb-2">
+                    <div class="p-3 bg-white d-inline-block rounded border shadow-sm mb-3">
                         <!-- Inline SVG QR Code Generator via BaconQrCode / Simple-QrCode -->
-                        {!! QrCode::size(160)->generate(route('documents.show', $document->id)) !!}
+                        {!! QrCode::size(160)->margin(1)->generate(route('documents.show', $document->id)) !!}
                     </div>
-                    <small class="text-muted d-block">Scan to quickly open or verify this document route on mobile
-                        devices.</small>
+                    <div class="px-2">
+                        <span class="badge bg-light text-primary border font-monospace px-3 py-2 fs-6 mb-2">
+                            {{ $document->tracking_number }}
+                        </span>
+                        <small class="text-muted d-block lh-sm">
+                            Scan using any mobile camera or tablet to quickly open or verify this document route on mobile.
+                        </small>
+                    </div>
                 </div>
             </div>
+            @include('documents.partials.tracker_card')
 
-            <!-- Routing Timeline Card -->
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="card-title mb-0"><i data-feather="navigation" class="feather-sm me-1 text-primary"></i>
-                        Routing Sequence</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="timeline list-unstyled mb-0">
-                        @forelse($document->routes as $route)
-                            <li class="mb-3 position-relative ps-4 border-start border-2 border-primary">
-                                <div class="small fw-bold text-primary">{{ $route->fromOffice->code ?? 'Origin' }} &rarr;
-                                    {{ $route->toOffice->code ?? 'Destination' }}</div>
-                                <div class="small fw-semibold text-dark">{{ $route->action_taken ?? 'Forwarded' }}</div>
-                                @if ($route->remarks)
-                                    <div class="small text-muted fst-italic">"{{ $route->remarks }}"</div>
-                                @endif
-                                <small
-                                    class="text-muted d-block fs-7 mt-1">{{ $route->created_at->format('M d, Y h:i A') }}</small>
-                            </li>
-                        @empty
-                            <li class="text-muted small">No route transitions recorded.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -270,3 +254,66 @@
         </div>
     </div>
 @endsection
+@push('styles')
+    <style>
+        /* Minimal Timeline CSS with Pixel-Perfect Vertical Alignment */
+        .clean-timeline {
+            position: relative;
+        }
+
+        /* Light Grey Vertical Linking Line centered at 7px */
+        .clean-timeline::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            bottom: 8px;
+            left: 11px;
+            width: 2px;
+            background-color: #e2e8f0;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .clean-timeline-item {
+            z-index: 2;
+        }
+
+        .clean-timeline-item:last-child {
+            padding-bottom: 0 !important;
+        }
+
+        /* Green Solid Dot for Past Steps - Centered at 7px */
+        .clean-timeline-dot.is-completed {
+            position: absolute;
+            left: 7px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #10b981;
+            /* Emerald/Teal Green */
+            transform: translateX(-50%);
+            border: 2px solid #fff;
+            z-index: 3;
+        }
+
+        /* Blue Ring Dot for Active Step - Centered at 7px */
+        .clean-timeline-dot.is-active {
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .fs-7 {
+            font-size: 0.815rem;
+        }
+    </style>
+@endpush

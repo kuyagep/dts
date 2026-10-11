@@ -25,12 +25,12 @@ class DocumentRoute extends Model
 
     public function fromOffice(): BelongsTo
     {
-        return $this->belongsTo(Office::class, 'from_division_id');
+        return $this->belongsTo(Office::class, 'from_office_id');
     }
 
     public function toOffice(): BelongsTo
     {
-        return $this->belongsTo(Office::class, 'to_division_id');
+        return $this->belongsTo(Office::class, 'to_office_id');
     }
 
     public function assignedUser(): BelongsTo
