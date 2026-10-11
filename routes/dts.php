@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BatchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentTypeController;
@@ -51,10 +52,23 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/transmittal', [DocumentController::class, 'generateTransmittal'])->name('transmittal');
 
         Route::get('/my-documents', [DocumentController::class, 'myDocuments'])->name('my-documents');
+
+        Route::get('/rejected', [DocumentController::class, 'rejected'])->name('rejected');
+
+        Route::get('/{document}/edit', [DocumentController::class, 'edit'])->name('edit');
+        Route::put('/{document}', [DocumentController::class, 'update'])->name('update');
         // Show Single Document Details & Routing History
         Route::get('/{document}', [DocumentController::class, 'show'])->name('show');
     });
 
+    // Print Batch Transmittal
+    Route::get('/batches/{id}/print', [BatchController::class, 'printBatch'])->name('batches.print');
+
+    // QR Code Scanning Target Routes
+    Route::get('/batches/receive/{batch_number}', [BatchController::class, 'showReceiveView'])->name('batches.receive.view');
+    Route::post('/batches/{id}/process-receive', [BatchController::class, 'processBatchReceive'])->name('batches.receive.process');
+
+    Route::post('/batches/dispatch', [BatchController::class, 'dispatchBatch'])->name('batches.dispatch');
     // --------------------------------------------------------------------
     // Master References & System Administration (Admin / SuperAdmin Only)
     // --------------------------------------------------------------------

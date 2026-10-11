@@ -14,6 +14,13 @@
 
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav navbar-align align-items-center">
+            <!-- QR Scanner Trigger Button in Top Nav -->
+            <li class="nav-item me-2">
+                <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center mt-1"
+                    data-bs-toggle="modal" data-bs-target="#qrScanModal">
+                    <i data-feather="camera" class="feather-sm me-1"></i> Scan Batch QR
+                </button>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                     <div class="position-relative">

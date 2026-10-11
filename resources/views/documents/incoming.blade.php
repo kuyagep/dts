@@ -3,16 +3,19 @@
 @section('title', 'Incoming Queue')
 
 @section('content')
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h1 class="h3 mb-0">Incoming Document Queue</h1>
-            <p class="text-muted mb-0">
-                Documents currently in transit to <strong>{{ auth()->user()->office->name ?? 'Your Office' }}</strong>
-                awaiting official receipt.
-            </p>
+            <h1 class="h3 mb-0">Incoming Documents & Batches</h1>
+            <p class="text-muted mb-0">Receive incoming single documents or scan transmittal batch QR codes.</p>
+        </div>
+        <div>
+            <!-- Main Camera Scan Button -->
+            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
+                <i data-feather="camera" class="feather-sm me-1"></i> Scan QR Code
+            </button>
         </div>
     </div>
-
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">

@@ -12,7 +12,7 @@
         <div class="col-12 col-xl-10 mx-auto">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="card-title mb-0">Document Metadata & Routing Information</h5>
+                    <h5 class="card-title mb-0">Document Information</h5>
                 </div>
 
                 <div class="card-body">
@@ -20,17 +20,7 @@
                         @csrf
 
                         <div class="row g-3">
-                            <!-- Title -->
-                            <div class="col-12">
-                                <label for="title" class="form-label font-weight-bold">Document Title <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                    id="title" name="title" value="{{ old('title') }}"
-                                    placeholder="e.g. Purchase Request for IT Supplies Q4 2026" required>
-                                @error('title')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+
 
                             <!-- Document Type -->
                             <div class="col-md-6">
@@ -38,7 +28,7 @@
                                         class="text-danger">*</span></label>
                                 <select class="form-select @error('document_type_id') is-invalid @enderror"
                                     id="document_type_id" name="document_type_id" required>
-                                    <option value="" disabled selected>Choose document classification...</option>
+                                    <option value="" disabled selected>Choose document type...</option>
                                     @foreach ($documentTypes as $type)
                                         <option value="{{ $type->id }}"
                                             {{ old('document_type_id') == $type->id ? 'selected' : '' }}>
@@ -68,15 +58,31 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <!-- Routing: Origin & Destination -->
-                            <div class="col-md-6">
-                                <label class="form-label font-weight-bold">Originating Office</label>
-                                <input type="text" class="form-control bg-light"
-                                    value="{{ auth()->user()->office->name ?? 'Unassigned Office' }}" readonly>
+                            <!-- Title -->
+                            <div class="col-12">
+                                <label for="title" class="form-label font-weight-bold">Document Title <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                    id="title" name="title" value="{{ old('title') }}"
+                                    placeholder="e.g. Purchase Request for IT Supplies Q4 2026" required>
+                                @error('title')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <div class="col-md-6">
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label for="description" class="form-label font-weight-bold">Description / Subject
+                                    Details</label>
+                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                    rows="3" placeholder="Brief background or purpose of the document...">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+
+                            <div class="col-md-12">
                                 <label for="destination_office_id" class="form-label font-weight-bold">Forward To
                                     (Destination Office) <span class="text-danger">*</span></label>
                                 <select class="form-select @error('destination_office_id') is-invalid @enderror"
@@ -95,21 +101,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <!-- Description -->
-                            <div class="col-12">
-                                <label for="description" class="form-label font-weight-bold">Description / Subject
-                                    Details</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                    rows="3" placeholder="Brief background or purpose of the document...">{{ old('description') }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
                             <!-- Remarks -->
                             <div class="col-12">
-                                <label for="remarks" class="form-label font-weight-bold">Dispatch Remarks</label>
+                                <label for="remarks" class="form-label font-weight-bold">Remarks</label>
                                 <input type="text" class="form-control @error('remarks') is-invalid @enderror"
                                     id="remarks" name="remarks" value="{{ old('remarks') }}"
                                     placeholder="e.g. Please review section B and provide approval signature.">

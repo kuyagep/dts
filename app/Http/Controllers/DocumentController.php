@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BatchTransmittal;
 use App\Models\Document;
 use App\Models\DocumentLog;
 use App\Models\DocumentRoute;
@@ -253,7 +254,6 @@ class DocumentController extends Controller
                 'status' => 'Received',
                 'current_office_id' => $user->office_id,
                 'current_custodian_id' => $user->id,
-
             ]);
 
             DocumentRoute::create([
@@ -261,6 +261,7 @@ class DocumentController extends Controller
                 'from_office_id' => $user->office_id,
                 'to_office_id' => $user->office_id,
                 'status' => 'Received',
+                'received_at' => now(),
                 'remarks' => $validated['remarks'] ?? 'Document recieved and review.',
             ]);
 
@@ -427,6 +428,7 @@ class DocumentController extends Controller
     {
         $user = auth()->user();
 
+        $offices = Office::where('is_active', true)->orderBy('name')->get();
         // Fetch documents where the active route from the user's office is 'In Transit'
         $documents = Document::where('status', 'In Transit')
             ->whereHas('routes', function ($query) use ($user) {
@@ -437,7 +439,7 @@ class DocumentController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('documents.transit', compact('documents'));
+        return view('documents.transit', compact('documents', 'offices'));
     }
 
     /**
@@ -484,5 +486,139 @@ class DocumentController extends Controller
         $documents = $query->latest()->paginate(10);
 
         return view('documents.my_documents', compact('documents'));
+    }
+
+
+    /**
+     * Store a batch transmittal and return the printable view.
+     */
+    public function dispatchBatch(Request $request)
+    {
+        $validated = $request->validate([
+            'document_ids'   => 'required|array|min:1',
+            'document_ids.*' => 'exists:documents,id',
+            'to_office_id'   => 'required|exists:offices,id',
+            'remarks'        => 'nullable|string|max:500',
+        ]);
+
+        $user = auth()->user();
+
+        // 1. Create Master Batch Transmittal
+        $batch = BatchTransmittal::create([
+            'batch_number'   => 'TR-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
+            'from_office_id' => $user->office_id,
+            'to_office_id'   => $validated['to_office_id'],
+            'dispatched_by'  => $user->id,
+            'status'         => 'In Transit',
+            'remarks'        => $validated['remarks'] ?? null,
+        ]);
+
+        // 2. Attach documents to batch and update routes
+        foreach ($validated['document_ids'] as $docId) {
+            $doc = Document::findOrFail($docId);
+
+            $doc->update([
+                'status'            => 'In Transit',
+                'current_office_id' => $validated['to_office_id'],
+            ]);
+
+            DocumentRoute::create([
+                'document_id'          => $doc->id,
+                'batch_transmittal_id' => $batch->id,
+                'from_office_id'       => $user->office_id,
+                'to_office_id'         => $validated['to_office_id'],
+                // 'action_taken'         => 'Dispatched via Batch Transmittal',
+                'status'               => 'In Transit',
+                'remarks'              => $validated['remarks'] ?? 'Dispatched via Batch Transmittal',
+            ]);
+        }
+
+        $batch->load(['routes.document.documentType', 'fromOffice', 'toOffice', 'dispatcher']);
+
+        // Return the printable transmittal slip view directly
+        return view('batches.print', compact('batch'));
+    }
+
+    /**
+     * Display a list of documents created by the authenticated user that have been rejected.
+     */
+    public function rejected(Request $request)
+    {
+        $user = auth()->user();
+
+        $query = Document::where('created_by', $user->id)
+            ->where('status', 'Rejected')
+            ->with(['documentType', 'currentOffice', 'routes' => function ($q) {
+                $q->where('status', 'Rejected')->latest();
+            }]);
+
+        // Optional Search Filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_number', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+            });
+        }
+
+        $documents = $query->latest()->paginate(10);
+
+        return view('documents.rejected', compact('documents'));
+    }
+
+
+    /**
+     * Show the form for editing the specified document.
+     */
+    public function edit(Document $document)
+    {
+        // Ensure the user owns the document or belongs to the current custodian office
+        if ($document->creator_id !== auth()->id() && $document->current_office_id !== auth()->user()->office_id) {
+            abort(403, 'Unauthorized access to edit this document.');
+        }
+
+        $documentTypes = \App\Models\DocumentType::all();
+        $offices = Office::orderBy('name')->get(); // Pass offices to view
+
+        return view('documents.edit', compact('document', 'documentTypes', 'offices'));
+    }
+
+    /**
+     * Update the document and route/forward to the selected destination office.
+     */
+    public function update(Request $request, Document $document)
+    {
+        $validated = $request->validate([
+            'title'                 => 'required|string|max:255',
+            'document_type_id'      => 'required|exists:document_types,id',
+            'description'           => 'nullable|string',
+            'destination_office_id' => 'required|exists:offices,id|different:current_office_id',
+        ], [
+            'destination_office_id.different' => 'Destination office cannot be your current office.',
+        ]);
+
+        $user = auth()->user();
+        $fromOfficeId = $document->current_office_id ?? $user->office_id;
+        $toOfficeId = $validated['destination_office_id'];
+
+
+        // Set document status to In Transit & transfer current custody
+        $validated['current_office_id'] = $toOfficeId;
+        $validated['status'] = 'In Transit';
+
+        $document->update($validated);
+
+        // Create route history entry for the forward action
+        DocumentRoute::create([
+            'document_id'    => $document->id,
+            'from_office_id' => $fromOfficeId,
+            'to_office_id'   => $toOfficeId,
+            'status'         => 'In Transit',
+            'remarks'        => 'Document details updated and forwarded to destination office.',
+            'created_at'     => now(),
+        ]);
+
+        return redirect()->route('documents.my-documents')
+            ->with('success', 'Document successfully updated and forwarded.');
     }
 }

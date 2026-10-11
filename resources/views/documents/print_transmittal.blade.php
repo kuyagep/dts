@@ -38,7 +38,7 @@
 </head>
 
 <body class="bg-light p-4">
-    <div class="container bg-white p-5 border shadow-sm">
+    <div class="container bg-white p-5 ">
         <!-- Print Header Action Button -->
         <div class="d-flex justify-content-end mb-4 no-print">
             <button onclick="window.print()" class="btn btn-primary me-2">Print Transmittal</button>

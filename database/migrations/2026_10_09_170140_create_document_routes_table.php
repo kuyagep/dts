@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignUuid('to_office_id')->constrained('offices');
             $table->foreignUuid('assigned_user_id')->nullable()->constrained('users');
 
-            $table->enum('status', ['Pending', 'In Transit', 'Received', 'Completed', 'Bypassed'])->default('Pending');
+            $table->enum('status', ['Pending', 'In Transit', 'Received', 'Completed', 'Bypassed', 'Rejected'])->default('Pending');
             $table->text('remarks')->nullable();
 
             $table->timestamp('received_at')->nullable();

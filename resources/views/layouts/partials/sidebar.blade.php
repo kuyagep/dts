@@ -131,6 +131,24 @@
                     <span class="align-middle">All Documents</span>
                 </a>
             </li>
+            <!-- Rejected Documents Sidebar Item -->
+            <li class="sidebar-item {{ request()->routeIs('documents.rejected') ? 'active' : '' }}">
+                <a class="sidebar-link d-flex justify-content-between align-items-center"
+                    href="{{ route('documents.rejected') }}">
+                    <div>
+                        <i class="align-middle text-danger" data-feather="alert-octagon"></i>
+                        <span class="align-middle">Rejected Docs</span>
+                    </div>
+                    @php
+                        $rejectedCount = \App\Models\Document::where('created_by', auth()->id())
+                            ->where('status', 'Rejected')
+                            ->count();
+                    @endphp
+                    @if ($rejectedCount > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $rejectedCount }}</span>
+                    @endif
+                </a>
+            </li>
             <!-- Completed Documents -->
             <li class="sidebar-item {{ request()->routeIs('documents.completed') ? 'active' : '' }}">
                 <a class="sidebar-link d-flex justify-content-between align-items-center"
