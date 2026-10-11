@@ -25,10 +25,12 @@
                     <div class="d-table-cell align-middle">
 
                         <div class="text-center mt-4 mb-3">
-                            <h1 class="h2 font-weight-bold text-primary">Division DocTracker</h1>
-                            <p class="lead text-muted">
-                                Document Tracking & Routing Management System
-                            </p>
+                            <!-- Division / DepEd Branding Logo -->
+                            <img src="{{ asset('images/davao-del-sur-logo.png') }}" alt="DepEd Davao del Sur Logo"
+                                class="img-fluid mb-3" style="max-height: 80px; width: auto;">
+
+                            <h1 class="h2 font-weight-bold text-primary">Document Tracking System</h1>
+
                         </div>
 
                         <div class="card shadow-sm border-0">
@@ -38,7 +40,8 @@
                         </div>
 
                         <div class="text-center text-muted mt-3">
-                            <small>&copy; {{ date('Y') }} Division Office. All rights reserved.</small>
+                            <small>&copy; {{ date('Y') }} Division Office of Davao del Sur. All rights
+                                reserved.</small>
                         </div>
 
                     </div>
