@@ -52,20 +52,21 @@
                 </div>
                 <div class="modal-body text-center p-4">
                     <p class="text-muted small mb-3">
-                        Point your device camera at the <strong>Master QR Code</strong> on the physical transmittal
+                        Point your device camera at the <strong>QR Code</strong> on the physical transmittal
                         slip.
                     </p>
 
                     <!-- Camera Stream Container -->
                     <div id="qr-reader" class="border rounded bg-dark overflow-hidden mx-auto"
-                        style="width: 100%; max-width: 380px;"></div>
+                        style="width: 100%; max-width: 380px; min-height: 280px;"></div>
+                    <div id="qr-camera-status" class="text-danger small mt-2 d-none"></div>
 
                     <!-- Manual Code Fallback Input -->
                     <div class="mt-4 pt-3 border-top">
                         <label for="manualBatchInput" class="form-label small fw-bold text-muted">Or enter Batch Code
                             manually:</label>
                         <div class="input-group">
-                            <input type="text" id="manualBatchInput"
+                            <input type="text" id="manualBatchInput" autofocus
                                 class="form-control text-uppercase font-monospace" placeholder="e.g. TR-20261011-89A2">
                             <button type="button" id="manualBatchBtn" class="btn btn-secondary">Open Batch</button>
                         </div>
@@ -87,66 +88,172 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const qrModal = document.getElementById('qrScanModal');
+            const statusDiv = document.getElementById('qr-camera-status');
             let html5QrCode = null;
 
-            if (qrModal) {
-                // Start Camera when Modal Opens
-                qrModal.addEventListener('shown.bs.modal', function() {
+            if (!qrModal) return;
+
+            qrModal.addEventListener('shown.bs.modal', function() {
+                if (statusDiv) {
+                    statusDiv.classList.add('d-none');
+                    statusDiv.textContent = '';
+                }
+
+                // Initialize instance
+                if (!html5QrCode) {
                     html5QrCode = new Html5Qrcode("qr-reader");
+                }
 
-                    const config = {
-                        fps: 10,
-                        qrbox: {
-                            width: 250,
-                            height: 250
-                        }
-                    };
+                const config = {
+                    fps: 10,
+                    qrbox: {
+                        width: 220,
+                        height: 220
+                    },
+                    aspectRatio: 1.0
+                };
 
+                // Try using back camera first; fall back to any available camera
+                html5QrCode.start({
+                        facingMode: "environment"
+                    },
+                    config,
+                    onScanSuccess
+                ).catch(err => {
+                    console.warn("Back camera failed, trying default camera...", err);
+
+                    // Fallback: Start with user/default camera
                     html5QrCode.start({
-                            facingMode: "environment"
-                        }, // Prefers rear camera on mobile
+                            facingMode: "user"
+                        },
                         config,
                         onScanSuccess
-                    ).catch(err => {
-                        console.warn("Camera access denied or unreadable:", err);
+                    ).catch(fatalErr => {
+                        console.error("Camera start failed:", fatalErr);
+                        if (statusDiv) {
+                            statusDiv.classList.remove('d-none');
+                            if (location.protocol !== 'https:' && location.hostname !==
+                                'localhost' && location.hostname !== '127.0.0.1') {
+                                statusDiv.innerHTML =
+                                    "<strong>Camera blocked:</strong> Web cameras require <strong>HTTPS</strong> or <code>localhost</code>.";
+                            } else {
+                                statusDiv.innerHTML =
+                                    "<strong>Camera access failed:</strong> Please allow camera permissions in your browser.";
+                            }
+                        }
                     });
                 });
+            });
 
-                // Stop Camera when Modal Closes
-                qrModal.addEventListener('hidden.bs.modal', function() {
-                    if (html5QrCode && html5QrCode.isScanning) {
-                        html5QrCode.stop().then(() => html5QrCode.clear()).catch(err => console.error(err));
-                    }
-                });
-            }
+            // Cleanup on Modal Close
+            qrModal.addEventListener('hidden.bs.modal', function() {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                    }).catch(err => console.error("Error stopping scanner:", err));
+                }
+            });
 
-            // Success Handler when QR Code is read
             function onScanSuccess(decodedText) {
-                if (decodedText) {
-                    // Stop scanning immediately
-                    if (html5QrCode) {
-                        html5QrCode.stop().then(() => {
-                            // Redirect to scanned URL (e.g., route('batches.receive.view'))
-                            window.location.href = decodedText;
-                        });
-                    } else {
-                        window.location.href = decodedText;
-                    }
+                if (!decodedText) return;
+
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => processScannedText(decodedText));
+                } else {
+                    processScannedText(decodedText);
                 }
             }
 
-            // Manual Input Handler
-            const manualBtn = document.getElementById('manualBatchBtn');
-            if (manualBtn) {
-                manualBtn.addEventListener('click', function() {
-                    const batchNum = document.getElementById('manualBatchInput').value.trim();
-                    if (batchNum) {
-                        window.location.href = "/batches/receive/" + encodeURIComponent(batchNum);
-                    }
-                });
+            function processScannedText(scannedText) {
+                const cleanText = scannedText.trim();
+                if (cleanText.startsWith('http://') || cleanText.startsWith('https://')) {
+                    window.location.href = cleanText;
+                } else {
+                    window.location.href = "/batches/receive/" + encodeURIComponent(cleanText);
+                }
             }
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let scannedBuffer = "";
+            let scanTimeout = null;
+
+            // Listen for global keypresses (USB Scanner acts as high-speed keyboard input)
+            document.addEventListener('keydown', function(e) {
+                // Ignore keypresses if the user is actively typing inside an input/textarea
+                const activeElem = document.activeElement;
+                const isInputField = activeElem && (
+                    activeElem.tagName === 'INPUT' ||
+                    activeElem.tagName === 'TEXTAREA' ||
+                    activeElem.tagName === 'SELECT'
+                );
+
+                // Allow typing inside designated manual search inputs
+                if (isInputField && activeElem.id !== 'globalUsbScanInput') {
+                    return;
+                }
+
+                // When the USB scanner sends 'Enter' (Keycode 13), process the buffered string
+                if (e.key === 'Enter') {
+                    if (scannedBuffer.length > 3) {
+                        e.preventDefault();
+                        processScannedBatchCode(scannedBuffer.trim());
+                        scannedBuffer = "";
+                    }
+                    return;
+                }
+
+                // Accumulate scanned characters (skipping modifier keys)
+                if (e.key.length === 1) {
+                    scannedBuffer += e.key;
+
+                    // Reset buffer if user typing is too slow (human speed vs USB scanner speed)
+                    clearTimeout(scanTimeout);
+                    scanTimeout = setTimeout(() => {
+                        scannedBuffer = "";
+                    }, 100); // USB scanners enter all chars in under 50ms
+                }
+            });
+
+            /**
+             * Redirects to batch processing route based on scanned input
+             */
+            function processScannedBatchCode(scannedText) {
+                if (!scannedText) return;
+
+                // Clean up scanner prefixes/suffixes if present
+                let cleanText = scannedText.trim();
+
+                // 1. If scanned text is a full URL (e.g. http://ddts.test/batches/receive/TR-20261011-89A2)
+                if (cleanText.startsWith('http://') || cleanText.startsWith('https://')) {
+                    window.location.href = cleanText;
+                    return;
+                }
+
+                // 2. If scanned text is a raw batch number (e.g. TR-20261011-89A2)
+                window.location.href = "/batches/receive/" + encodeURIComponent(cleanText);
+            }
+        });
+    </script>
+
+    {{-- <script>
+        // Auto-submit USB Input when Enter is pressed in the navbar field
+        document.getElementById('globalUsbScanInput')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const code = this.value.trim();
+                if (code) {
+                    if (code.startsWith('http://') || code.startsWith('https://')) {
+                        window.location.href = code;
+                    } else {
+                        window.location.href = "/batches/receive/" + encodeURIComponent(code);
+                    }
+                }
+            }
+        });
+    </script> --}}
     <script>
         // Global Toastr Configuration
         toastr.options = {

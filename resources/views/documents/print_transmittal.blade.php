@@ -3,106 +3,189 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document Transmittal Slip</title>
+    <title>Document Transmittal Slip - Landscape</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Exact A4 Landscape Printable Area with Reserved Footer Margin */
+        @page {
+            size: A4 landscape;
+            margin-top: 10mm;
+            margin-left: 15mm;
+            margin-right: 15mm;
+            margin-bottom: 22mm;
+
+            /* Left Footer: System Timestamp & User Metadata */
+            @bottom-left {
+                content: "DepEd DDTS System Generated Document | Generated on: {{ now()->format('F d, Y h:i:s A') }} | By: {{ auth()->user()->name }}";
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                color: #555;
+            }
+
+            /* Right Footer: Actual Page Number and Page Total */
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                font-weight: bold;
+                color: #555;
+            }
+        }
+
+        html,
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            background-color: #fff !important;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .transmittal-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        /* Fixed Repeating Footer Container for standard browser print fallbacks */
+        .print-footer {
+            display: none;
+        }
+
         @media print {
             .no-print {
                 display: none !important;
             }
 
             body {
-                font-size: 12pt;
-                background: #fff !important;
-            }
-
-            .container {
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
                 padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .transmittal-container {
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .table-light {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .screen-footer {
+                display: none !important;
+            }
+
+            /* Fixed footer bar for Chrome/Edge web print engine */
+            .print-footer {
+                display: flex !important;
+                position: fixed;
+                bottom: -15mm;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-top: 1px dashed #bbb;
+                padding-top: 5px;
+                font-size: 8pt;
+                color: #555;
+                background-color: #fff;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .page-counter::after {
+                content: "Page " counter(page);
             }
         }
 
-        .header-logo {
-            max-height: 60px;
+        /* On-Screen Modal / Web View Footer */
+        .screen-footer {
+            border-top: 1px dashed #ccc;
+            padding-top: 8px;
+            font-size: 8.5pt;
+            color: #666;
+            margin-top: 30px;
         }
 
-        .signature-line {
-            border-bottom: 1px solid #000;
-            width: 220px;
-            display: inline-block;
-            margin-top: 40px;
+        .doc-table th,
+        .doc-table td {
+            font-size: 9.5pt;
+            padding: 8px 10px;
+        }
+
+        .sig-cell {
+            min-width: 180px;
+            height: 38px;
         }
     </style>
 </head>
 
-<body class="bg-light p-4">
-    <div class="container bg-white p-5 ">
-        <!-- Print Header Action Button -->
-        <div class="d-flex justify-content-end mb-4 no-print">
-            <button onclick="window.print()" class="btn btn-primary me-2">Print Transmittal</button>
-            <button onclick="window.close()" class="btn btn-secondary">Close</button>
+<body class="bg-light p-3">
+    <div class="transmittal-container bg-white p-4 rounded shadow-sm">
+
+        <!-- Action Buttons (Screen Only) -->
+        <div class="d-flex justify-content-end mb-3 no-print">
+            <button onclick="window.print()" class="btn btn-primary me-2 shadow-sm">
+                Print Transmittal
+            </button>
+            <button onclick="window.close()" class="btn btn-secondary">
+                Close
+            </button>
         </div>
 
-        <!-- Official Header -->
-        <div class="text-center mb-4 border-bottom pb-3">
-            <h4 class="fw-bold text-uppercase mb-1">Division Document Tracking System (DDTS)</h4>
-            <h5 class="fw-normal mb-0">DOCUMENT TRANSMITTAL SLIP</h5>
-            <small class="text-muted">Date: {{ now()->format('F d, Y h:i A') }}</small>
+        <!-- Header Block -->
+        <div class="text-center mb-3 border-bottom pb-2">
+            <h4 class="fw-bold text-uppercase mb-1" style="letter-spacing: 0.5px;">Division Document Tracking System
+                (DDTS)</h4>
+            <h5 class="fw-bold text-primary mb-0">DOCUMENT TRANSMITTAL SLIP</h5>
+            <span class="small text-muted">{{ auth()->user()->office->name ?? 'N/A' }}</span>
         </div>
-
-        <!-- Metadata -->
-        <div class="row mb-4">
-            <div class="col-6">
-                <strong>Dispatching Office:</strong> {{ auth()->user()->office->name ?? 'N/A' }}<br>
-                <strong>Released By:</strong> {{ auth()->user()->name }}
-            </div>
-            <div class="col-6 text-end">
-                <strong>Total Items:</strong> {{ $documents->count() }}<br>
-                <strong>Transmittal Ref:</strong> TR-{{ strtoupper(Str::random(8)) }}
-            </div>
-        </div>
-
         <!-- Document Table -->
-        <table class="table table-bordered align-middle mb-5">
+        <table class="table table-bordered align-middle doc-table mb-4">
             <thead class="table-light">
-                <tr>
-                    <th style="width: 50px;">#</th>
-                    <th>Tracking Number</th>
+                <tr class="text-uppercase text-secondary small">
+                    <th style="width: 40px;" class="text-center">#</th>
+                    <th style="width: 170px;">Tracking Number</th>
                     <th>Document Title</th>
-                    <th>Type</th>
-                    <th>Destination Office</th>
+                    <th style="width: 160px;">Type</th>
+                    <th style="width: 220px;">Destination Office</th>
+                    <th style="width: 220px;">Date & Signature Received</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($documents as $index => $doc)
+                @forelse ($documents as $index => $doc)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td class="fw-bold">{{ $doc->tracking_number }}</td>
-                        <td>{{ $doc->title }}</td>
+                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                        <td class="fw-bold font-monospace text-primary">{{ $doc->tracking_number }}</td>
+                        <td class="fw-semibold">{{ $doc->title }}</td>
                         <td>{{ $doc->documentType->name ?? 'N/A' }}</td>
                         <td>{{ $doc->destinationOffice->name ?? 'N/A' }}</td>
+                        <td class="sig-cell"></td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No documents included in this transmittal
+                            batch.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
-        <!-- Signature Section -->
-        <div class="row mt-5 pt-3">
-            <div class="col-6 text-center">
-                <p class="mb-0">Dispatched / Released By:</p>
-                <div class="signature-line"></div>
-                <p class="fw-bold mt-1 mb-0">{{ auth()->user()->name }}</p>
-                <small class="text-muted">{{ auth()->user()->office->code ?? 'Sender Office' }}</small>
+
+
+        <!-- On-Screen Preview Footer -->
+        <div class="screen-footer d-flex justify-content-between align-items-center no-print">
+            <div>
+                <strong>System Generated Document</strong> |
+                {{ now()->format('F d, Y h:i:s A') }} | By: {{ auth()->user()->name }}
             </div>
-            <div class="col-6 text-center">
-                <p class="mb-0">Received By (Signature over Printed Name):</p>
-                <div class="signature-line"></div>
-                <p class="fw-bold mt-1 mb-0">___________________________</p>
-                <small class="text-muted">Date & Time Received</small>
+            <div>
+                <span class="badge bg-light text-dark border">Page Preview</span>
             </div>
         </div>
+
     </div>
 </body>
 
