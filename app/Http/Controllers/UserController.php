@@ -15,9 +15,28 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['office', 'roles'])->latest()->paginate(10);
+        $currentUser = auth()->user();
+
+        // 1. Filter Users List
+        $users = User::with(['office', 'roles'])
+            ->when(!$currentUser->hasRole('SuperAdmin'), function ($query) {
+                // Exclude users who have the SuperAdmin role if current user is not a SuperAdmin
+                $query->whereDoesntHave('roles', function ($q) {
+                    $q->where('name', 'SuperAdmin');
+                });
+            })
+            ->latest()
+            ->paginate(10);
+
+        // 2. Filter Roles Dropdown Options
+        $roles = Role::when(!$currentUser->hasRole('SuperAdmin'), function ($query) {
+            // Hide the 'SuperAdmin' role from the dropdown menu for regular Admins
+            $query->where('name', '!=', 'SuperAdmin');
+        })
+            ->orderBy('name')
+            ->get();
+
         $offices = Office::where('is_active', true)->orderBy('name')->get();
-        $roles = Role::orderBy('name')->get();
 
         return view('users.index', compact('users', 'offices', 'roles'));
     }
