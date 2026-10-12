@@ -50,14 +50,7 @@
                                         <i data-feather="edit-2" class="feather-sm"></i>
                                     </button>
 
-                                    @unlesshasrole(['Admin', 'User', 'Clerk'])
-                                        <!-- Edit Button Trigger / Modal Link -->
-                                        <button type="button" class="btn btn-sm btn-outline-primary me-1"
-                                            data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
-                                            <i data-feather="edit" class="feather-sm"></i>
-                                        </button>
-
-                                        <!-- Delete Form -->
+                                    @role('SuperAdmin')
                                         <form action="{{ route('users.destroy', $user->id) }}" method="POST"
                                             class="d-inline delete-user-form">
                                             @csrf
@@ -66,7 +59,7 @@
                                                 <i data-feather="trash-2" class="feather-sm"></i>
                                             </button>
                                         </form>
-                                    @endunlesshasrole
+                                    @endrole
                                 </td>
                             </tr>
                         @empty
