@@ -13,9 +13,9 @@
 
         <!-- Full Name -->
         <div class="mb-3">
-            <label for="name" class="form-label">Full Name</label>
-            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                value="{{ old('name') }}" placeholder="e.g. John Doe" required autofocus>
+            <label for="name" class="form-label">Full Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name"
+                name="name" value="{{ old('name') }}" placeholder="e.g. Juan Dela Cruz" required autofocus>
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -23,19 +23,20 @@
 
         <!-- Email Address -->
         <div class="mb-3">
-            <label for="email" class="form-label">Official Email</label>
-            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"
-                value="{{ old('email') }}" placeholder="johndoe@division.gov" required>
+            <label for="email" class="form-label">Official Email<span class="text-danger">*</span></label>
+            <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email"
+                name="email" value="{{ old('email') }}" placeholder="juan.delacruz@deped.gov.ph" required>
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
         <!-- Office Selection -->
-        <div class="mb-3">
-            <label for="office_id" class="form-label">Assigned Office / Section</label>
-            <select class="form-select @error('office_id') is-invalid @enderror" id="office_id" name="office_id" required>
-                <option value="" disabled selected>Select your office...</option>
+        <div class="form-group mb-3">
+            <label for="office_id">Assigned Office/School<span class="text-danger">*</span></label>
+            <select class="form-select select2 @error('office_id') is-invalid @enderror" id="office_id" name="office_id"
+                required>
+                <option value="" disabled {{ old('office_id') ? '' : 'selected' }}>Select your office...</option>
                 @foreach (\App\Models\Office::where('is_active', true)->orderBy('name')->get() as $office)
                     <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>
                         {{ $office->name }} ({{ $office->code . '-' . $office->department->name }})
@@ -43,15 +44,15 @@
                 @endforeach
             </select>
             @error('office_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>
 
         <!-- Password -->
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
-                name="password" placeholder="Minimum 8 characters" required>
+            <label for="password" class="form-label">Password<span class="text-danger">*</span></label>
+            <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
+                id="password" name="password" placeholder="Minimum 8 characters" required>
             @error('password')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -59,9 +60,9 @@
 
         <!-- Confirm Password -->
         <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation"
-                placeholder="Re-enter password" required>
+            <label for="password_confirmation" class="form-label">Confirm Password<span class="text-danger">*</span></label>
+            <input type="password" class="form-control form-control-lg" id="password_confirmation"
+                name="password_confirmation" placeholder="Re-enter password" required>
         </div>
 
         <!-- Submit Button -->
