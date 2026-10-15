@@ -38,7 +38,7 @@
                 <option value="" disabled selected>Select your office...</option>
                 @foreach (\App\Models\Office::where('is_active', true)->orderBy('name')->get() as $office)
                     <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>
-                        {{ $office->name }} ({{ $office->code . '-' . $office->department->code }})
+                        {{ $office->name }} ({{ $office->code . '-' . $office->department->name }})
                     </option>
                 @endforeach
             </select>
