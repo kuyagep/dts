@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://dts.rms-davsur.com/%{REQUEST_URI} [L,R=301]
+
+    # Redirect to public folder
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(env|log|json|lock|md|gitignore|gitattributes|yml|yaml)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block artisan access
+<Files "artisan">
+    Order allow,deny
+    Deny from all
+</Files>

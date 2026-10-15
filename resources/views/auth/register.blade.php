@@ -5,7 +5,7 @@
 @section('content')
     <div class="text-center mb-4">
         <h3 class="h4">Account Registration</h3>
-        <p class="text-muted small">Register as an official division action officer or staff</p>
+        {{-- <p class="text-muted small">Register as an official division action officer or staff</p> --}}
     </div>
 
     <form method="POST" action="{{ route('register') }}">
@@ -38,7 +38,7 @@
                 <option value="" disabled selected>Select your office...</option>
                 @foreach (\App\Models\Office::where('is_active', true)->orderBy('name')->get() as $office)
                     <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>
-                        {{ $office->name }} ({{ $office->code }})
+                        {{ $office->name }} ({{ $office->code . '-' . $office->department->code }})
                     </option>
                 @endforeach
             </select>
