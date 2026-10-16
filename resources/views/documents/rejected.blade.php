@@ -101,7 +101,7 @@
                                     <div class="btn-group">
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View History">
-                                            <i data-feather="eye" class="feather-sm"></i>
+                                            <i class="fa-solid fa-qrcode"></i>
                                         </a>
                                         <a href="{{ route('documents.edit', $doc->id) }}"
                                             class="btn btn-sm btn-outline-primary" title="Edit & Re-submit">

@@ -12,7 +12,7 @@
         <div>
             <!-- Main Camera Scan Button -->
             <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
-                <i data-feather="camera" class="feather-sm me-1"></i> Scan QR Code
+                <i class="fa-solid fa-qrcode me-1"></i> Scan QRCode
             </button>
         </div>
     </div>
@@ -44,8 +44,8 @@
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 45) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <span class="text-muted small">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -80,7 +80,7 @@
                                     <div class="btn-group">
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View Details">
-                                            <i data-feather="eye" class="feather-sm"></i> View
+                                            <i class="fa-solid fa-qrcode"></i> View
                                         </a>
 
                                         <!-- Receive Button (Triggers Intake Modal with Remarks) -->

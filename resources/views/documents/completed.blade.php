@@ -73,7 +73,7 @@
                                     <div class="btn-group">
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View Details & Audit Log">
-                                            <i data-feather="eye" class="feather-sm me-1"></i> Details
+                                            <i class="fa-solid fa-qrcode"></i> Details
                                         </a>
 
                                         <!-- Option to Archive if needed -->

@@ -5,12 +5,12 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h1 class="h3 mb-0">Document Tracking Index</h1>
+            <h1 class="h3 mb-0">Document Tracking</h1>
             <p class="text-muted mb-0">Monitor document movements, custodians, and lifecycle status across all offices.</p>
         </div>
 
-        <a href="{{ route('documents.create') }}" class="btn btn-primary">
-            <i class="align-middle me-1" data-feather="plus"></i> New Document
+        <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Document
         </a>
 
     </div>
@@ -72,7 +72,7 @@
                             <th>Document Title & Type</th>
                             <th>Origin Office</th>
                             <th>Current Location</th>
-                            <th>Urgency</th>
+                            {{-- <th>Urgency</th> --}}
                             <th>Status</th>
                             <th>Date Created</th>
                             <th class="text-end pe-3">Action</th>
@@ -91,8 +91,8 @@
                                 <!-- Title & Document Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <span class="text-muted small">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -112,7 +112,7 @@
                                 </td>
 
                                 <!-- Urgency Badge -->
-                                <td>
+                                {{-- <td>
                                     @if ($doc->urgency === 'Immediate')
                                         <span class="badge bg-danger">Immediate</span>
                                     @elseif($doc->urgency === 'Urgent')
@@ -120,14 +120,14 @@
                                     @else
                                         <span class="badge bg-secondary">Normal</span>
                                     @endif
-                                </td>
+                                </td> --}}
 
                                 <!-- Status Badge -->
                                 <td>
                                     @switch($doc->status)
                                         @case('In Transit')
-                                            <span class="badge bg-info text-dark"><i data-feather="send"
-                                                    class="feather-sm me-1"></i> In Transit</span>
+                                            <span class="badge bg-info "><i data-feather="send" class="feather-sm me-1"></i> In
+                                                Transit</span>
                                         @break
 
                                         @case('Received')
@@ -164,7 +164,7 @@
                                 <td class="text-end pe-3">
                                     <a href="{{ route('documents.show', $doc->id) }}"
                                         class="btn btn-sm btn-outline-primary" title="View Details">
-                                        <i data-feather="eye" class="feather-sm"></i> Track
+                                        <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
                                 </td>
                             </tr>

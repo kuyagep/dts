@@ -15,17 +15,20 @@
         </div>
 
         <div>
-            <!-- Print Transmittal Slip Button -->
-            <button type="button" id="printTransmittalBtn" class="btn btn-success me-1" disabled>
-                <i data-feather="printer" class="feather-sm me-1"></i> Print Transmittal (<span id="selectedCount">0</span>)
-            </button>
-
-            <!-- Print Batch Transmittal Button (Triggers Modal) -->
-            <button type="button" id="openBatchModalBtn" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#batchDispatchModal" disabled>
-                <i data-feather="printer" class="feather-sm me-1"></i> Print Batch Transmittal (<span
-                    id="selectedCount1">0</span>)
-            </button>
+            @hasanyrole('Clerk|Admin')
+                <!-- Print Transmittal Slip Button -->
+                <button type="button" id="printTransmittalBtn" class="btn btn-success me-1" disabled>
+                    <i data-feather="printer" class="feather-sm me-1"></i> Print Transmittal (<span id="selectedCount">0</span>)
+                </button>
+            @endhasanyrole
+            @hasanyrole('User|Admin')
+                <!-- Print Batch Transmittal Button (Triggers Modal) -->
+                <button type="button" id="openBatchModalBtn" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#batchDispatchModal" disabled>
+                    <i data-feather="printer" class="feather-sm me-1"></i> Print Batch Transmittal (<span
+                        id="selectedCount1">0</span>)
+                </button>
+            @endhasanyrole
         </div>
 
 
@@ -120,8 +123,8 @@
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <span class="text-muted small">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -138,7 +141,7 @@
 
                                 <!-- Status Badge -->
                                 <td>
-                                    <span class="badge bg-info text-dark">
+                                    <span class="badge bg-info">
                                         <i data-feather="send" class="feather-sm me-1"></i> In Transit
                                     </span>
                                 </td>
@@ -151,8 +154,8 @@
                                 <!-- Actions -->
                                 <td class="text-end pe-3">
                                     <a href="{{ route('documents.show', $doc->id) }}"
-                                        class="btn btn-sm btn-outline-secondary">
-                                        <i data-feather="eye" class="feather-sm me-1"></i> Track & Details
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
                                 </td>
                             </tr>

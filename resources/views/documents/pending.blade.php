@@ -41,8 +41,8 @@
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <span class="text-muted small">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -78,7 +78,7 @@
                                         <!-- Inspect -->
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View Details">
-                                            <i data-feather="eye" class="feather-sm"></i>
+                                            <i class="fa-solid fa-qrcode"></i>
                                         </a>
 
 
@@ -125,7 +125,7 @@
                                                             <label class="form-label font-weight-bold">Target Office <span
                                                                     class="text-danger">*</span></label>
                                                             <select name="to_office_id" id="to_office_id"
-                                                                class="form-select" required>
+                                                                class="form-control" required>
                                                                 <option value="" disabled selected>Select destination
                                                                     office...</option>
                                                                 @foreach ($offices as $office)

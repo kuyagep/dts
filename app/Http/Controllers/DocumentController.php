@@ -34,7 +34,7 @@ class DocumentController extends Controller
             $query->where('status', $request->status);
         }
 
-        $documents = $query->latest()->paginate(15);
+        $documents = $query->latest()->paginate(10);
 
         return view('documents.index', compact('documents'));
     }
@@ -131,7 +131,7 @@ class DocumentController extends Controller
         $user = auth()->user();
 
         DB::transaction(function () use ($validated, $user, $request, &$document) {
-            $trackingNumber = 'DIV-' . now()->format('Ym') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            $trackingNumber = now()->format('ym') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
 
             $document = Document::create([
                 'tracking_number' => $trackingNumber,
@@ -162,6 +162,7 @@ class DocumentController extends Controller
                 'action' => 'CREATED',
                 'from_status' => 'Draft',
                 'to_status' => 'In Transit',
+                'office_id'   => $user->office_id,
                 'remarks' => $validated['remarks'] ?? 'Document generated and routed.',
                 'ip_address' => $request->ip(),
             ]);
@@ -256,14 +257,14 @@ class DocumentController extends Controller
                 'current_custodian_id' => $user->id,
             ]);
 
-            DocumentRoute::create([
-                'document_id' => $document->id,
-                'from_office_id' => $user->office_id,
-                'to_office_id' => $user->office_id,
-                'status' => 'Received',
-                'received_at' => now(),
-                'remarks' => $validated['remarks'] ?? 'Document recieved and review.',
-            ]);
+            // DocumentRoute::create([
+            //     'document_id' => $document->id,
+            //     'from_office_id' => $user->office_id,
+            //     'to_office_id' => $user->office_id,
+            //     'status' => 'Received',
+            //     'received_at' => now(),
+            //     'remarks' => $validated['remarks'] ?? 'Document recieved and review.',
+            // ]);
 
             // Record in audit log
             DocumentLog::create([

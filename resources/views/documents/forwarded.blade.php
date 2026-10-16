@@ -61,8 +61,8 @@
                                 <td>
                                     @switch($doc->status)
                                         @case('In Transit')
-                                            <span class="badge bg-info text-dark"><i data-feather="send"
-                                                    class="feather-sm me-1"></i> In Transit</span>
+                                            <span class="badge bg-info "><i data-feather="send" class="feather-sm me-1"></i> In
+                                                Transit</span>
                                         @break
 
                                         @case('Received')
@@ -99,7 +99,7 @@
                                 <td class="text-end pe-3">
                                     <a href="{{ route('documents.show', $doc->id) }}"
                                         class="btn btn-sm btn-outline-primary">
-                                        <i data-feather="eye" class="feather-sm me-1"></i> Track & Details
+                                        <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
                                 </td>
                             </tr>

@@ -10,8 +10,8 @@
                 All records and transmittals created or authored by <strong>{{ auth()->user()->name }}</strong>.
             </p>
         </div>
-        <a href="{{ route('documents.create') }}" class="btn btn-primary">
-            <i data-feather="plus-circle" class="feather-sm me-1"></i> Create New Document
+        <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Document
         </a>
     </div>
 
@@ -60,9 +60,9 @@
                         <tr>
                             <th class="ps-3">Tracking Number</th>
                             <th>Title & Type</th>
-                            <th>Current Custodian Office</th>
+                            <th>Current Office</th>
                             <th>Status</th>
-                            <th>Created Date</th>
+                            <th>Date Created</th>
                             <th class="text-end pe-3">Actions</th>
                         </tr>
                     </thead>
@@ -79,8 +79,8 @@
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <span class="text-muted small">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -94,8 +94,8 @@
                                 <td>
                                     @switch($doc->status)
                                         @case('In Transit')
-                                            <span class="badge bg-info text-dark"><i data-feather="send"
-                                                    class="feather-sm me-1"></i> In Transit</span>
+                                            <span class="badge bg-info "><i data-feather="send" class="feather-sm me-1"></i> In
+                                                Transit</span>
                                         @break
 
                                         @case('Received')
@@ -136,8 +136,8 @@
                                 <!-- Actions -->
                                 <td class="text-end pe-3">
                                     <a href="{{ route('documents.show', $doc->id) }}"
-                                        class="btn btn-sm btn-outline-secondary">
-                                        <i data-feather="eye" class="feather-sm me-1"></i> Track Workflow
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
                                 </td>
                             </tr>

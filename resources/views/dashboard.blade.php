@@ -17,14 +17,14 @@
 
     <div class="d-flex gap-2 mb-3">
         <!-- Main Camera Scan Button -->
-        <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
-            <i data-feather="camera" class="feather-sm me-1"></i> Scan QR Code
+        <button type="button" class="btn btn-primary btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
+            <i class="fa-solid fa-qrcode me-1"></i> Scan QR Code
         </button>
-        <a href="{{ route('documents.create') }}" class="btn btn-success shadow-sm">
-            <i data-feather="plus-circle" class="feather-sm me-1"></i> New Document
+        <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Document
         </a>
-        <a href="{{ route('documents.transit') }}" class="btn btn-info">
-            <i data-feather="send" class="feather-sm me-1"></i> In Transit
+        <a href="{{ route('documents.transit') }}" class="btn btn-info btn-lg">
+            <i class="fa-regular fa-paper-plane me-1"></i> In Transit
         </a>
     </div>
     <!-- Main Content Grid -->
@@ -44,7 +44,7 @@
 
 
                             <!-- Document Type -->
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <label for="document_type_id" class="form-label font-weight-bold">Document Type <span
                                         class="text-danger">*</span></label>
                                 <select class="form-select @error('document_type_id') is-invalid @enderror"
@@ -63,7 +63,7 @@
                             </div>
 
                             <!-- Urgency Level -->
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="priority" class="form-label font-weight-bold">Priority Level <span
                                         class="text-danger">*</span></label>
                                 <select class="form-select @error('priority') is-invalid @enderror" id="urgency"
@@ -156,11 +156,11 @@
             <!-- Quick Search Box -->
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-2">Quick Lookup</h6>
+                    <h6 class="fw-bold mb-2">Quick Search</h6>
                     <form action="{{ route('documents.index') }}" method="GET">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Enter Tracking No..."
-                                required>
+                            <input type="text" name="search" class="form-control form-control-lg"
+                                placeholder="Enter Tracking No..." required>
                             <button class="btn btn-primary" type="submit">
                                 <i data-feather="search" class="feather-sm"></i>
                             </button>

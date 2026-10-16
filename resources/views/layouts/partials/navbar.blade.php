@@ -16,12 +16,14 @@
 
         <ul class="navbar-nav navbar-align align-items-center">
             <!-- QR Scanner Trigger Button in Top Nav -->
-            <li class="nav-item me-2">
-                <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center mt-1"
-                    data-bs-toggle="modal" data-bs-target="#qrScanModal">
-                    <i data-feather="camera" class="feather-sm me-1"></i> Scan QRCode
-                </button>
-            </li>
+            @hasanyrole('Clerk|Admin')
+                <li class="nav-item me-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center mt-1"
+                        data-bs-toggle="modal" data-bs-target="#qrScanModal">
+                        <i class="fa-solid fa-qrcode me-1"></i> Scan QRCode
+                    </button>
+                </li>
+            @endhasanyrole
             <li class="nav-item dropdown">
                 <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                     <div class="position-relative">
@@ -48,7 +50,11 @@
                 </a>
 
                 <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                    <img src="{{ asset('static/img/avatars/avatar.jpg') }}" class="avatar img-fluid rounded me-1" />
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm avatar img-fluid me-1"
+                        style="width: 32px; height: 32px; font-size: 1rem; font-weight: bold;">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                    {{-- <img src="{{ asset('static/img/avatars/avatar.jpg') }}" class="avatar img-fluid rounded me-1" /> --}}
                     <span class="text-dark">{{ auth()->user()->name }}</span>
                     <span class="badge bg-primary ms-1">{{ auth()->user()->getRoleNames()->first() }}</span>
                 </a>

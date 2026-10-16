@@ -147,11 +147,11 @@
             <thead class="table-light">
                 <tr class="text-uppercase text-secondary small">
                     <th style="width: 40px;" class="text-center">#</th>
-                    <th style="width: 170px;">Tracking Number</th>
-                    <th>Document Title</th>
-                    <th style="width: 160px;">Type</th>
+                    <th style="width: 170px;">Tracking No.</th>
+                    <th style="width: 160px;">Category</th>
+                    <th>Subject Matter</th>
                     <th style="width: 220px;">Destination Office</th>
-                    <th style="width: 220px;">Date & Signature Received</th>
+                    <th style="width: 220px;">Name,Date & Signature</th>
                 </tr>
             </thead>
             <tbody>
@@ -159,8 +159,8 @@
                     <tr>
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
                         <td class="fw-bold font-monospace text-primary">{{ $doc->tracking_number }}</td>
-                        <td class="fw-semibold">{{ $doc->title }}</td>
                         <td>{{ $doc->documentType->name ?? 'N/A' }}</td>
+                        <td class="fw-semibold">{{ $doc->title }}</td>
                         <td>{{ $doc->destinationOffice->name ?? 'N/A' }}</td>
                         <td class="sig-cell"></td>
                     </tr>

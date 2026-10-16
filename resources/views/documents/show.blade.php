@@ -10,9 +10,17 @@
                 {{ $document->creator->name ?? 'System' }}</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('documents.index') }}" class="btn btn-outline-secondary">
+            <a href="{{ route('documents.create') }}" class="btn btn-outline-secondary">
                 <i data-feather="arrow-left" class="feather-sm"></i> Back
             </a>
+            <a href="{{ route('documents.create') }}" class="btn btn-success shadow-sm">
+                <i data-feather="plus-circle" class="feather-sm me-1"></i> New Document
+            </a>
+            @if ($document->status == 'In Transit')
+                <a href="{{ route('documents.transit') }}" class="btn btn-info">
+                    <i data-feather="send" class="feather-sm me-1"></i> In Transit
+                </a>
+            @endif
 
             <!-- Document Action Buttons -->
             {{-- @can('documents.forward')
@@ -42,7 +50,7 @@
                     <h5 class="card-title mb-0">Document Details</h5>
                     @switch($document->status)
                         @case('In Transit')
-                            <span class="badge bg-info text-dark fs-6"><i data-feather="send" class="feather-sm me-1"></i> In
+                            <span class="badge bg-info fs-6"><i data-feather="send" class="feather-sm me-1"></i> In
                                 Transit</span>
                         @break
 
@@ -142,7 +150,7 @@
                                         </td>
                                         <td><span class="badge bg-light text-dark border">{{ $log->action }}</span></td>
                                         <td><span class="small fw-semibold">{{ $log->user->name ?? 'System' }}</span></td>
-                                        <td><span class="small">{{ $log->office->code ?? 'N/A' }}</span>
+                                        <td><span class="small">{{ $log->office->name ?? 'N/A' }}</span>
                                         </td>
                                         <td><small class="text-muted">{{ $log->remarks ?? '-' }}</small></td>
                                     </tr>

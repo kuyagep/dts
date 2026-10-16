@@ -3,7 +3,7 @@
         <!-- Brand / Logo -->
         <a class="sidebar-brand" href="{{ route('dashboard') }}">
 
-            <span class="align-middle">DOC TRACKER</span>
+            <span class="align-middle">DRMS</span>
 
         </a>
 
