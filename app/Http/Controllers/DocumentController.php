@@ -307,7 +307,7 @@ class DocumentController extends Controller
                 'to_office_id'   => $validated['to_office_id'],
                 'status'   => 'In Transit',
                 'remarks'        => $validated['remarks'] ?? null,
-                'step_number' => 1,
+                // 'step_number' => 1,
                 // 'sender_id'      => $user->id,
             ]);
 

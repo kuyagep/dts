@@ -11,22 +11,22 @@
                 ({{ auth()->user()->office->code ?? 'Division Office' }})
             </p>
         </div>
-        <div class="d-flex gap-2">
-            <!-- Main Camera Scan Button -->
-            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
-                <i data-feather="camera" class="feather-sm me-1"></i> Scan QR Code
-            </button>
-            <a href="{{ route('documents.create') }}" class="btn btn-success shadow-sm">
-                <i data-feather="plus-circle" class="feather-sm me-1"></i> New Document
-            </a>
-            <a href="{{ route('documents.transit') }}" class="btn btn-info">
-                <i data-feather="send" class="feather-sm me-1"></i> In Transit
-            </a>
-        </div>
+
     </div>
 
 
-
+    <div class="d-flex gap-2 mb-3">
+        <!-- Main Camera Scan Button -->
+        <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
+            <i data-feather="camera" class="feather-sm me-1"></i> Scan QR Code
+        </button>
+        <a href="{{ route('documents.create') }}" class="btn btn-success shadow-sm">
+            <i data-feather="plus-circle" class="feather-sm me-1"></i> New Document
+        </a>
+        <a href="{{ route('documents.transit') }}" class="btn btn-info">
+            <i data-feather="send" class="feather-sm me-1"></i> In Transit
+        </a>
+    </div>
     <!-- Main Content Grid -->
     <div class="row g-3">
         <!-- Recent Documents Table -->

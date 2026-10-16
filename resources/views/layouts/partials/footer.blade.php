@@ -3,7 +3,7 @@
         <div class="row text-muted">
             <div class="col-6 text-start">
                 <p class="mb-0">
-                    <strong>Division Doc Tracker</strong> &copy; {{ date('Y') }}
+                    &copy; {{ date('Y') }} {{ CONFIG('app.name') }} v{{ CONFIG('app.version') }}
                 </p>
             </div>
         </div>

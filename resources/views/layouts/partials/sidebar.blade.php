@@ -226,13 +226,14 @@
                         <span class="align-middle">User Accounts</span>
                     </a>
                 </li>
-
-                <li class="sidebar-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                    <a class="sidebar-link" href="{{ route('roles.index') }}">
-                        <i class="align-middle" data-feather="shield"></i>
-                        <span class="align-middle">Roles & Permissions</span>
-                    </a>
-                </li>
+                @role('SuperAdmin')
+                    <li class="sidebar-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('roles.index') }}">
+                            <i class="align-middle" data-feather="shield"></i>
+                            <span class="align-middle">Roles & Permissions</span>
+                        </a>
+                    </li>
+                @endrole
             @endhasanyrole
         </ul>
     </div>

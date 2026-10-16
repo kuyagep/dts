@@ -1,11 +1,12 @@
 @extends('layouts.auth')
 
-@section('title', 'Reset Password')
+@section('title', 'Forgot Password')
 
 @section('content')
     <div class="text-center mb-4">
-        <h3 class="h4">Reset Password</h3>
-        <p class="text-muted small">Enter your account email to receive a password reset link.</p>
+        <h3 class="h4">Forgot Password</h3>
+        <p class="text-muted small">Forgot your password? No problem. Enter your email address and we will send you a reset
+            link.</p>
     </div>
 
     @if (session('status'))
@@ -28,7 +29,7 @@
         </div>
 
         <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">Send Password Reset Link</button>
+            <button type="submit" class="btn btn-primary btn-lg">Email Password Reset Link</button>
         </div>
     </form>
 

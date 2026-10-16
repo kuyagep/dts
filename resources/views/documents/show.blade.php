@@ -11,25 +11,25 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('documents.index') }}" class="btn btn-outline-secondary">
-                <i data-feather="arrow-left" class="feather-sm"></i> Back to Index
+                <i data-feather="arrow-left" class="feather-sm"></i> Back
             </a>
 
             <!-- Document Action Buttons -->
-            @can('documents.forward')
+            {{-- @can('documents.forward')
                 @if ($document->status !== 'Archived' && $document->status !== 'Approved')
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forwardModal">
                         <i data-feather="send" class="feather-sm me-1"></i> Forward Document
                     </button>
                 @endif
-            @endcan
+            @endcan --}}
 
-            @can('documents.approve')
+            {{-- @can('documents.approve')
                 @if ($document->status !== 'Approved' && $document->status !== 'Archived')
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
                         <i data-feather="check-circle" class="feather-sm me-1"></i> Approve & Complete
                     </button>
                 @endif
-            @endcan
+            @endcan --}}
         </div>
     </div>
 

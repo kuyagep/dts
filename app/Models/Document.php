@@ -67,7 +67,7 @@ class Document extends Model
      */
     public function routes(): HasMany
     {
-        return $this->hasMany(DocumentRoute::class)->orderBy('step_number');
+        return $this->hasMany(DocumentRoute::class)->orderBy('created_at');
     }
 
     /**
