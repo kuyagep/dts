@@ -108,6 +108,13 @@
                     allowClear: true,
                     width: '100%'
                 });
+
+                $('#to_office_id').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Select destination office...',
+                    allowClear: true,
+                    width: '100%'
+                });
             } else {
                 console.error('jQuery is not loaded!');
             }

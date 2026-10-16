@@ -124,7 +124,8 @@
                                                         <div class="mb-3">
                                                             <label class="form-label font-weight-bold">Target Office <span
                                                                     class="text-danger">*</span></label>
-                                                            <select name="to_office_id" class="form-select" required>
+                                                            <select name="to_office_id" id="to_office_id"
+                                                                class="form-select" required>
                                                                 <option value="" disabled selected>Select destination
                                                                     office...</option>
                                                                 @foreach ($offices as $office)
