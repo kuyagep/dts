@@ -30,7 +30,12 @@
                     <tbody>
                         @forelse($users as $user)
                             <tr>
-                                <td class="ps-3 fw-bold text-dark">{{ $user->name }}</td>
+                                <td class="ps-3 fw-bold text-dark">
+                                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm avatar img-fluid me-1"
+                                        style="width: 32px; height: 32px; font-size: 1rem; font-weight: bold;">
+                                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                    </div> {{ $user->name }}
+                                </td>
                                 <td>{{ $user->email }}</td>
                                 <td><span
                                         class="badge bg-light text-dark border">{{ $user->office->name ?? 'Unassigned' }}</span>
