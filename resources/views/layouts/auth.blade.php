@@ -65,10 +65,12 @@
                 theme: 'bootstrap-5',
                 placeholder: 'Select your office...',
                 allowClear: true,
-                width: '100%'
+                // width: '100%'
             });
+
         });
     </script>
+
 </body>
 
 </html>

@@ -104,11 +104,15 @@
 
 
                             <div class="col-md-12">
-                                <label for="destination_office_id" class="form-label font-weight-bold">Forward To
-                                    (Destination Office) <span class="text-danger">*</span></label>
-                                <select class="form-select @error('destination_office_id') is-invalid @enderror"
+                                <label for="destination_office_id" class="form-label font-weight-bold">
+                                    Forward To (Destination Office) <span class="text-danger">*</span>
+                                </label>
+
+                                <select
+                                    class="form-select select2-select @error('destination_office_id') is-invalid @enderror"
                                     id="destination_office_id" name="destination_office_id" required>
-                                    <option value="" disabled selected>Select destination office...</option>
+                                    <option value="" disabled {{ old('destination_office_id') ? '' : 'selected' }}>
+                                        Select destination office...</option>
                                     @foreach ($offices as $office)
                                         @if ($office->id !== auth()->user()->office_id)
                                             <option value="{{ $office->id }}"
@@ -118,8 +122,9 @@
                                         @endif
                                     @endforeach
                                 </select>
+
                                 @error('destination_office_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <!-- Remarks -->

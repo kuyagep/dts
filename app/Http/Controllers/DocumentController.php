@@ -162,7 +162,7 @@ class DocumentController extends Controller
                 'action' => 'CREATED',
                 'from_status' => 'Draft',
                 'to_status' => 'In Transit',
-                'remarks' => 'Document generated and routed.',
+                'remarks' => $validated['remarks'] ?? 'Document generated and routed.',
                 'ip_address' => $request->ip(),
             ]);
         });
