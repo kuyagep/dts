@@ -21,7 +21,7 @@
         rel="stylesheet" />
 </head>
 
-<body class="bg-dark">
+<body style="background-color: #222E3C">
     <main class="d-flex w-100 h-100">
         <div class="container d-flex flex-column">
             <div class="row vh-100">
