@@ -21,7 +21,7 @@
         rel="stylesheet" />
 </head>
 
-<body>
+<body class="bg-dark">
     <main class="d-flex w-100 h-100">
         <div class="container d-flex flex-column">
             <div class="row vh-100">
@@ -33,7 +33,7 @@
                             <img src="{{ asset('images/davao-del-sur-logo.png') }}" alt="DepEd Davao del Sur Logo"
                                 class="img-fluid mb-3" style="max-height: 80px; width: auto;">
 
-                            <h1 class="h2 font-weight-bold text-primary">Document Tracking System</h1>
+                            <h1 class="h2 font-weight-bold text-white"><b>Document Tracking System</b></h1>
 
                         </div>
 

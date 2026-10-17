@@ -17,20 +17,21 @@
 
     <div class="d-flex gap-2 mb-3">
         <!-- Main Camera Scan Button -->
-        <button type="button" class="btn btn-primary btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#qrScanModal">
+        <button type="button" class="btn btn-primary btn-lg shadow-sm" accesskey="r" alt="Alt + R" data-bs-toggle="modal"
+            data-bs-target="#qrScanModal">
             <i class="fa-solid fa-qrcode me-1"></i> Scan QR Code
         </button>
-        <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm">
+        <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm" accesskey="n" alt="Alt + N">
             <i class="fa-solid fa-plus me-1"></i> New Document
         </a>
-        <a href="{{ route('documents.transit') }}" class="btn btn-info btn-lg">
+        <a href="{{ route('documents.transit') }}" class="btn btn-info btn-lg" accesskey="t" alt="Alt + T">
             <i class="fa-regular fa-paper-plane me-1"></i> In Transit
         </a>
     </div>
     <!-- Main Content Grid -->
     <div class="row g-3">
         <!-- Recent Documents Table -->
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white border-bottom py-3">
                     <h5 class="card-title mb-0">Document Information</h5>
@@ -152,7 +153,7 @@
         </div>
 
         <!-- Quick Search & Recent Activity Stream -->
-        <div class="col-lg-4">
+        <div class="col-lg-5">
             <!-- Quick Search Box -->
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">

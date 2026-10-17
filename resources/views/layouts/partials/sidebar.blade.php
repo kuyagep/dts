@@ -14,7 +14,7 @@
             </li>
 
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('dashboard') }}">
+                <a class="sidebar-link" href="{{ route('dashboard') }}" accesskey="h" alt="Alt + H">
                     <i class="align-middle" data-feather="sliders"></i>
                     <span class="align-middle">Dashboard</span>
                 </a>
@@ -36,7 +36,7 @@
             <!-- In Transit Queue -->
             <li class="sidebar-item {{ request()->routeIs('documents.transit') ? 'active' : '' }}">
                 <a class="sidebar-link d-flex justify-content-between align-items-center"
-                    href="{{ route('documents.transit') }}">
+                    href="{{ route('documents.transit') }}" accesskey="t" alt="Alt + T">
                     <div>
                         <i class="align-middle" data-feather="send"></i>
                         <span class="align-middle">In Transit Queue</span>

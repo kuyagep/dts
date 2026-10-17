@@ -18,8 +18,9 @@
             <!-- QR Scanner Trigger Button in Top Nav -->
             @hasanyrole('Clerk|Admin')
                 <li class="nav-item me-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center mt-1"
-                        data-bs-toggle="modal" data-bs-target="#qrScanModal">
+                    <button type="button" accesskey="r" alt="Alt + R"
+                        class="btn btn-outline-primary btn-sm d-flex align-items-center mt-1" data-bs-toggle="modal"
+                        data-bs-target="#qrScanModal">
                         <i class="fa-solid fa-qrcode me-1"></i> Scan QRCode
                     </button>
                 </li>
