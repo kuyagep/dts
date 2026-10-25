@@ -10,7 +10,31 @@
         <ul class="sidebar-nav">
             <!-- Section: Core -->
             <li class="sidebar-header">
-                Core
+                Menu
+            </li>
+
+            <!-- Create New Document -->
+            <!-- Action Buttons Section -->
+            <li class="sidebar-item px-3 my-2">
+                <div class="d-grid gap-2">
+                    <!-- New Document Button -->
+                    <a href="{{ route('documents.create') }}"
+                        class="btn btn-primary w-100 text-white d-flex align-items-center justify-content-center gap-2 shadow-sm py-2 {{ request()->routeIs('documents.create') ? 'active' : '' }}"
+                        style="border-radius: 6px; font-weight: 600;">
+                        <i data-feather="plus-circle" class="feather-sm"></i>
+                        <span>New Document</span>
+                    </a>
+                    @hasanyrole('Clerk|Admin')
+                        <!-- Scan QR Code Modal Trigger Button -->
+                        <button type="button"
+                            class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm py-2"
+                            accesskey="r" title="Shortcut: Alt + R" data-bs-toggle="modal" data-bs-target="#qrScanModal"
+                            style="border-radius: 6px; font-weight: 600;">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>Scan QR Code</span>
+                        </button>
+                    @endhasanyrole
+                </div>
             </li>
 
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -25,13 +49,7 @@
                 Document Tracking
             </li>
 
-            <!-- Create New Document -->
-            <li class="sidebar-item {{ request()->routeIs('documents.create') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('documents.create') }}">
-                    <i class="align-middle" data-feather="plus-circle"></i>
-                    <span class="align-middle">New Document</span>
-                </a>
-            </li>
+
 
             <!-- In Transit Queue -->
             <li class="sidebar-item {{ request()->routeIs('documents.transit') ? 'active' : '' }}">

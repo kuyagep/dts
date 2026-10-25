@@ -14,9 +14,9 @@
     </div>
 
     <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
+        <div class="card-body ">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th class="ps-3">Tracking Number</th>

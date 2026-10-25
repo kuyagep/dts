@@ -83,6 +83,8 @@ Route::middleware(['auth'])->group(function () {
     // Document Types Management
     Route::resource('document-types', DocumentTypeController::class);
 
+    // Update user status route
+    Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.update-status');
     // User Accounts Management
     Route::resource('users', UserController::class);
 

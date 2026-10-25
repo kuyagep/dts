@@ -4,8 +4,8 @@
 
 @section('content')
     <div class="text-center mb-4">
-        <h3 class="h4">Welcome Back</h3>
-        <p class="text-muted small">Sign in to access your document dashboard</p>
+        <h3 class="h4">Sign in to your account</h3>
+        {{-- <p class="text-muted small">Sign in to access your document dashboard</p> --}}
     </div>
 
     <!-- Session Status -->
@@ -23,7 +23,7 @@
         <div class="mb-3">
             <label for="email" class="form-label">Email Address</label>
             <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email"
-                name="email" value="{{ old('email') }}" placeholder="Enter your registered email" required autofocus>
+                name="email" value="{{ old('email') }}" placeholder="" required autofocus>
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -40,7 +40,7 @@
 
             <div class="input-group">
                 <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
-                    id="password" name="password" placeholder="Enter your password" required>
+                    id="password" name="password" placeholder="" required>
 
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>

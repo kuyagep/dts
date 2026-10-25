@@ -59,6 +59,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'office_id' => $validated['office_id'],
+            'status' => 'approved',
         ]);
 
         $user->assignRole($validated['role']);
@@ -106,5 +107,23 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+    }
+
+    public function updateStatus(Request $request, User $user)
+    {
+        // Ensure only authorized users can change user status
+        if (!auth()->user()->hasAnyRole(['SuperAdmin', 'Admin'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|in:approved,pending,deactivated',
+        ]);
+
+        $user->update([
+            'status' => $validated['status'],
+        ]);
+
+        return redirect()->back()->with('success', "User account status updated to {$user->status}.");
     }
 }

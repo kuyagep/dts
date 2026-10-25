@@ -30,10 +30,10 @@
 
                         <div class="text-center mt-4 mb-3">
                             <!-- Division / DepEd Branding Logo -->
-                            <img src="{{ asset('images/davao-del-sur-logo.png') }}" alt="DepEd Davao del Sur Logo"
-                                class="img-fluid mb-3" style="max-height: 80px; width: auto;">
+                            <img src="{{ asset('images/DTS_LOGO.png') }}" alt="DepEd Davao del Sur Logo"
+                                class="img-fluid mb-3" style="max-height: 120px; width: auto;">
 
-                            <h1 class="h2 font-weight-bold text-white"><b>Document Tracking System</b></h1>
+                            {{-- <h1 class="h2 font-weight-bold text-white"><b>Document Tracking System</b></h1> --}}
 
                         </div>
 

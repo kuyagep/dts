@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
                 'name' => 'Super Admin',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'status' => 'approved',
             ]
         );
         $admin->assignRole('SuperAdmin');
@@ -31,6 +32,7 @@ class UserSeeder extends Seeder
                 'name' => 'System Administrator',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'status' => 'approved',
             ]
         );
         $admin->assignRole('Admin');
@@ -41,6 +43,7 @@ class UserSeeder extends Seeder
                 'name' => 'Receiving Clerk',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'status' => 'approved',
             ]
         );
         $clerk->assignRole('Clerk');
@@ -53,6 +56,8 @@ class UserSeeder extends Seeder
                     'name' => $office->name . ' User',
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
+                    'status' => 'approved',
+                    'office_id' => $office->id,
                 ]
             );
             $user->assignRole('User');
