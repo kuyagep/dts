@@ -8,8 +8,11 @@ use App\Models\DocumentLog;
 use App\Models\DocumentRoute;
 use App\Models\DocumentType;
 use App\Models\Office;
+use App\Models\User;
+use App\Notifications\DocumentStatusChangedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class DocumentController extends Controller
 {
@@ -166,6 +169,16 @@ class DocumentController extends Controller
                 'remarks' => $validated['remarks'] ?? 'Document generated and routed.',
                 'ip_address' => $request->ip(),
             ]);
+
+            // Notify all approved personnel in the receiving office
+            $receivingOfficeUsers = User::where('office_id', $request->destination_office_id)
+                ->where('status', 'approved')
+                ->get();
+
+            Notification::send(
+                $receivingOfficeUsers,
+                new DocumentStatusChangedNotification($document, 'incoming', $user)
+            );
         });
 
         return redirect()->route('documents.show', $document->id)
@@ -321,6 +334,16 @@ class DocumentController extends Controller
                 'remarks'     => $validated['remarks'] ?? "Forwarded to Office ID: " . $officeName,
                 // 'ip_address' => $request->ip(),
             ]);
+
+            // Notify all approved personnel in the receiving office
+            $receivingOfficeUsers = User::where('office_id', $validated['to_office_id'])
+                ->where('status', 'approved')
+                ->get();
+
+            Notification::send(
+                $receivingOfficeUsers,
+                new DocumentStatusChangedNotification($document, 'incoming', $user)
+            );
         });
 
         return redirect()->route('documents.index')->with('success', "Document {$document->tracking_number} dispatched successfully.");
@@ -390,7 +413,6 @@ class DocumentController extends Controller
                 'to_office_id'   => $user->office_id,
                 'status'   => 'Completed',
                 'remarks'        => $request->input('remarks', 'Document action completed and filed in office.'),
-
             ]);
 
             // Create entry in Audit Log
@@ -401,6 +423,13 @@ class DocumentController extends Controller
                 'action'      => 'COMPLETED',
                 'remarks'     => $request->input('remarks', 'Document action completed and filed in office.'),
             ]);
+
+            // Notify creator if the completer is not the creator
+            if ($document->creator && $document->creator->id !== $user->id) {
+                $document->creator->notify(
+                    new DocumentStatusChangedNotification($document, 'completed', $user)
+                );
+            }
         });
 
         return redirect()->route('documents.pending')->with('success', "Document {$document->tracking_number} marked as Completed / Filed successfully.");

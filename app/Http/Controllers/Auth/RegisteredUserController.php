@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Notifications\NewUserRegisteredNotification;
+use Illuminate\Support\Facades\Notification;
 
 class RegisteredUserController extends Controller
 {
@@ -51,13 +53,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // Handle initial pending status check right after registration
-        // if ($user->status === 'pending') {
-        //     return redirect()->route('login')->with(
-        //         'status',
-        //         'Registration successful! Please check your email to verify your address. Your account is currently pending administrator approval.'
-        //     );
-        // }
+        // Notify SuperAdmin and Admin users
+        $admins = User::role(['SuperAdmin', 'Admin'])->get();
+        Notification::send($admins, new NewUserRegisteredNotification($user));
 
         Auth::login($user);
 
