@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="text-center mb-4">
-        <h3 class="h4">Sign in to your account</h3>
+        <h3 class="h4 text-muted">Sign in to your account</h3>
         {{-- <p class="text-muted small">Sign in to access your document dashboard</p> --}}
     </div>
 
