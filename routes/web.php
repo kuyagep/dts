@@ -5,13 +5,13 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    } else {
-        return redirect()->route('dashboard');
-    }
+    // if (!auth()->check()) {
+    //     return redirect()->route('login');
+    // } else {
+    //     return redirect()->route('dashboard');
+    // }
 
-    // return view('welcome');
+    return view('welcome');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'verified']);
