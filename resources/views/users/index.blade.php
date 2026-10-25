@@ -13,6 +13,55 @@
         </button>
     </div>
 
+    <div class="row mb-3 align-items-center">
+        <!-- Search Form -->
+        <div class="col-md-6 col-lg-4">
+            <form action="{{ route('users.index') }}" method="GET" class="d-flex gap-2">
+                <!-- Retain current status filter if selected -->
+                @if (request('status'))
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                @endif
+
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i data-feather="search" class="feather-sm text-muted"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0"
+                        placeholder="Search by name or email..." value="{{ request('search') }}">
+                    @if (request('search'))
+                        <a href="{{ route('users.index', ['status' => request('status')]) }}"
+                            class="btn btn-outline-secondary" title="Clear Search">
+                            <i data-feather="x" class="feather-sm"></i>
+                        </a>
+                    @endif
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick Status Filter Pills -->
+        <div class="col-md-6 col-lg-8 text-md-end mt-2 mt-md-0">
+            <div class="btn-group" role="group">
+                <a href="{{ route('users.index', array_filter(['search' => request('search')])) }}"
+                    class="btn btn-sm {{ !request('status') ? 'btn-primary' : 'btn-outline-primary' }}">
+                    All
+                </a>
+                <a href="{{ route('users.index', array_filter(['search' => request('search'), 'status' => 'pending'])) }}"
+                    class="btn btn-sm {{ request('status') == 'pending' ? 'btn-warning' : 'btn-outline-warning' }}">
+                    Pending
+                </a>
+                <a href="{{ route('users.index', array_filter(['search' => request('search'), 'status' => 'approved'])) }}"
+                    class="btn btn-sm {{ request('status') == 'approved' ? 'btn-success' : 'btn-outline-success' }}">
+                    Approved
+                </a>
+                <a href="{{ route('users.index', array_filter(['search' => request('search'), 'status' => 'deactivated'])) }}"
+                    class="btn btn-sm {{ request('status') == 'deactivated' ? 'btn-danger' : 'btn-outline-danger' }}">
+                    Deactivated
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -54,8 +103,7 @@
                                         @if ($user->email_verified_at)
                                             <span class="badge bg-success mt-1" style="font-size: 0.7rem;">Verified</span>
                                         @else
-                                            <span class="badge bg-warning text-dark mt-1"
-                                                style="font-size: 0.7rem;">Unverified</span>
+                                            <span class="badge bg-warning mt-1" style="font-size: 0.7rem;">Unverified</span>
                                         @endif
 
                                         <!-- Account Approval / Activation Status Badge -->
@@ -69,7 +117,7 @@
                                             @break
 
                                             @default
-                                                <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">Pending</span>
+                                                <span class="badge bg-warning mt-1" style="font-size: 0.7rem;">Pending</span>
                                         @endswitch
                                     </div>
                                 </td>
@@ -88,7 +136,7 @@
                                         data-role="{{ $user->roles->first()->name ?? '' }}">
                                         <i data-feather="edit-2" class="feather-sm"></i>
                                     </button>
-                                    @role('Admin')
+                                    @hasanyrole('SuperAdmin|Admin')
                                         <div class="btn-group btn-group-sm me-1" role="group">
                                             @if ($user->status !== 'approved')
                                                 <form
@@ -115,7 +163,7 @@
                                                 </form>
                                             @endif
                                         </div>
-                                    @endrole
+                                    @endhasanyrole
 
                                     @role('SuperAdmin')
                                         <form action="{{ route('users.destroy', $user->id) }}" method="POST"
@@ -156,8 +204,10 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Full Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder="e.g. Jane Doe" required>
+                                <label class="form-label font-weight-bold">Full Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" placeholder="e.g. Jane Doe"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Email Address <span

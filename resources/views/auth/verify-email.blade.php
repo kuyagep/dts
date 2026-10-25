@@ -11,9 +11,20 @@
         </p>
     </div>
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-            A new verification link has been sent to the email address you provided during registration.
+    @if (session('status'))
+
+
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i data-feather="check-circle" class="feather-sm me-2 flex-shrink-0"></i>
+                <div>
+                    @if (session('status') == 'verification-link-sent')
+                        A new verification link has been sent to the email address you provided during registration.
+                    @else
+                        {{ session('status') }}
+                    @endif
+                </div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif

@@ -20,7 +20,7 @@
                     <!-- New Document Button -->
                     <a href="{{ route('documents.create') }}"
                         class="btn btn-primary w-100 text-white d-flex align-items-center justify-content-center gap-2 shadow-sm py-2 {{ request()->routeIs('documents.create') ? 'active' : '' }}"
-                        style="border-radius: 6px; font-weight: 600;">
+                        style="border-radius: 6px; font-weight: 600;" title="Shortcut: Alt + N">
                         <i data-feather="plus-circle" class="feather-sm"></i>
                         <span>New Document</span>
                     </a>

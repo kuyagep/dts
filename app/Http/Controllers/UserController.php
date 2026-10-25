@@ -13,11 +13,13 @@ class UserController extends Controller
     /**
      * Display a listing of system users.
      */
-    public function index()
+    public function index(Request $request)
     {
         $currentUser = auth()->user();
+        $search = $request->input('search');
+        $status = $request->input('status');
 
-        // 1. Filter Users List
+        // 1. Filter Users List with Search, Status, and Security Scope
         $users = User::with(['office', 'roles'])
             ->when(!$currentUser->hasRole('SuperAdmin'), function ($query) {
                 // Exclude users who have the SuperAdmin role if current user is not a SuperAdmin
@@ -25,20 +27,32 @@ class UserController extends Controller
                     $q->where('name', 'SuperAdmin');
                 });
             })
+            ->when($search, function ($query, $search) {
+                // Search across user name or email address
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->when($status, function ($query, $status) {
+                // Filter by user account status (pending, approved, deactivated)
+                $query->where('status', $status);
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString(); // Preserves ?search= and ?status= parameters across pagination pages
 
         // 2. Filter Roles Dropdown Options
         $roles = Role::when(!$currentUser->hasRole('SuperAdmin'), function ($query) {
-            // Hide the 'SuperAdmin' role from the dropdown menu for regular Admins
+            // Hide the 'SuperAdmin' role from dropdown menu for non-SuperAdmins
             $query->where('name', '!=', 'SuperAdmin');
-        })
-            ->orderBy('name')
+        })->orderBy('name')
             ->get();
 
+        // 3. Active Offices for Modals/Filters
         $offices = Office::where('is_active', true)->orderBy('name')->get();
 
-        return view('users.index', compact('users', 'offices', 'roles'));
+        return view('users.index', compact('users', 'offices', 'roles', 'search', 'status'));
     }
 
     /**

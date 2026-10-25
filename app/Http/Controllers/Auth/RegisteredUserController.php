@@ -35,6 +35,8 @@ class RegisteredUserController extends Controller
             'office_id' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'terms' => ['required', 'accepted'], // Enforces checking the Terms & Conditions
+
         ]);
 
         $user = User::create([
@@ -42,11 +44,20 @@ class RegisteredUserController extends Controller
             'office_id' => $request->office_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'status' => 'pending', // Explicitly assign initial pending status
         ]);
 
         $user->assignRole('User');
 
         event(new Registered($user));
+
+        // Handle initial pending status check right after registration
+        // if ($user->status === 'pending') {
+        //     return redirect()->route('login')->with(
+        //         'status',
+        //         'Registration successful! Please check your email to verify your address. Your account is currently pending administrator approval.'
+        //     );
+        // }
 
         Auth::login($user);
 

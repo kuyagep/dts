@@ -65,6 +65,23 @@
                 name="password_confirmation" placeholder="Re-enter password" required>
         </div>
 
+        <!-- Terms & Conditions Checkbox -->
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms"
+                    id="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
+                <label class="form-check-label text-secondary" for="terms">
+                    I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal"
+                        class="text-primary text-decoration-underline">Terms of Service</a> & <a href="#"
+                        data-bs-toggle="modal" data-bs-target="#privacyModal"
+                        class="text-primary text-decoration-underline">Privacy Policy</a><span class="text-danger">*</span>
+                </label>
+                @error('terms')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
         <!-- Submit Button -->
         <div class="d-grid gap-2 mt-4">
             <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
