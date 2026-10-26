@@ -146,9 +146,9 @@
         <table class="table table-bordered align-middle doc-table mb-4">
             <thead class="table-light">
                 <tr class="text-uppercase text-secondary small">
-                    <th style="width: 40px;" class="text-center">#</th>
-                    <th style="width: 170px;">Tracking No.</th>
-                    <th style="width: 160px;">Category</th>
+                    <th style="width: 30px;" class="text-center">#</th>
+                    <th style="width: 130px;">Tracking No.</th>
+                    <th style="width: 130px;">Category</th>
                     <th>Subject Matter</th>
                     <th style="width: 220px;">Destination Office</th>
                     <th style="width: 220px;">Name,Date & Signature</th>
@@ -160,7 +160,15 @@
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
                         <td class="fw-bold font-monospace text-primary">{{ $doc->tracking_number }}</td>
                         <td>{{ $doc->documentType->name ?? 'N/A' }}</td>
-                        <td class="fw-semibold">{{ $doc->title }}</td>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ $doc->title }}</div>
+                            @if ($doc->description)
+                                <div class="text-muted small text-truncate" style="max-width: 300px;"
+                                    title="{{ $doc->description }}">
+                                    {{ $doc->description }}
+                                </div>
+                            @endif
+                        </td>
                         <td>{{ $doc->destinationOffice->name ?? 'N/A' }}</td>
                         <td class="sig-cell"></td>
                     </tr>
