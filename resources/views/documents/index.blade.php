@@ -150,6 +150,11 @@
                                                 Approved</span>
                                         @break
 
+                                        @case('Completed')
+                                            <span class="badge bg-success"><i data-feather="check" class="feather-sm me-1"></i>
+                                                Completed</span>
+                                        @break
+
                                         @case('Archived')
                                             <span class="badge bg-dark"><i data-feather="archive" class="feather-sm me-1"></i>
                                                 Archived</span>
@@ -167,8 +172,8 @@
 
                                 <!-- Actions -->
                                 <td class="text-end pe-3">
-                                    <a href="{{ route('documents.show', $doc->id) }}"
-                                        class="btn btn-sm btn-outline-primary" title="View Details">
+                                    <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-primary"
+                                        title="View Details">
                                         <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
                                 </td>
