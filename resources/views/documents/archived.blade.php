@@ -38,9 +38,15 @@
 
                                 <!-- Title & Type -->
                                 <td>
-                                    <div class="fw-bold text-dark">{{ Str::limit($doc->title, 45) }}</div>
-                                    <span class="badge bg-light text-dark border small">
-                                        {{ $doc->documentType->name ?? 'Unclassified' }}
+                                    <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
+                                    @if ($doc->description)
+                                        <div class="text-muted small text-truncate" style="max-width: 280px;"
+                                            title="{{ $doc->description }}">
+                                            {{ $doc->description }}
+                                        </div>
+                                    @endif
+                                    <span class="text-muted extra-small d-block mt-1" style="font-size: 0.78rem;">
+                                        Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
 
@@ -93,7 +99,8 @@
             <div class="card-footer bg-white border-top py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="small text-muted">
-                        Showing {{ $documents->firstItem() }} to {{ $documents->lastItem() }} of {{ $documents->total() }}
+                        Showing {{ $documents->firstItem() }} to {{ $documents->lastItem() }} of
+                        {{ $documents->total() }}
                         archived records
                     </span>
                     <div>

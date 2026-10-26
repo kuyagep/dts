@@ -43,8 +43,14 @@
 
                                 <!-- Title & Type -->
                                 <td>
-                                    <div class="fw-bold text-dark">{{ Str::limit($doc->title, 45) }}</div>
-                                    <span class="text-muted small">
+                                    <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
+                                    @if ($doc->description)
+                                        <div class="text-muted small text-truncate" style="max-width: 280px;"
+                                            title="{{ $doc->description }}">
+                                            {{ $doc->description }}
+                                        </div>
+                                    @endif
+                                    <span class="text-muted extra-small d-block mt-1" style="font-size: 0.78rem;">
                                         Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>
@@ -85,7 +91,8 @@
 
                                         <!-- Receive Button (Triggers Intake Modal with Remarks) -->
                                         <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                                            data-bs-target="#receiveModal-{{ $doc->id }}" title="Receive with Remarks">
+                                            data-bs-target="#receiveModal-{{ $doc->id }}"
+                                            title="Receive with Remarks">
                                             <i data-feather="inbox" class="feather-sm me-1"></i> Receive...
                                         </button>
 

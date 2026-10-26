@@ -97,7 +97,7 @@
                                 <input type="checkbox" class="form-check-input" id="selectAllCheckbox">
                             </th>
                             <th class="ps-3">Tracking Number</th>
-                            <th>Title & Type</th>
+                            <th>Subject Matter</th>
                             <th>Destination Office</th>
                             <th>Dispatched By</th>
                             <th>Current Status</th>
@@ -123,7 +123,13 @@
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
-                                    <span class="text-muted small">
+                                    @if ($doc->description)
+                                        <div class="text-muted small text-truncate" style="max-width: 280px;"
+                                            title="{{ $doc->description }}">
+                                            {{ $doc->description }}
+                                        </div>
+                                    @endif
+                                    <span class="text-muted extra-small d-block mt-1" style="font-size: 0.78rem;">
                                         Type: {{ $doc->documentType->name ?? 'Unclassified' }}
                                     </span>
                                 </td>

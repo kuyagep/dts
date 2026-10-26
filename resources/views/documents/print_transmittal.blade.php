@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document Transmittal Slip - Landscape</title>
+    <title>Document Transmittal Slip</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Exact A4 Landscape Printable Area with Reserved Footer Margin */
@@ -16,7 +16,7 @@
 
             /* Left Footer: System Timestamp & User Metadata */
             @bottom-left {
-                content: "DepEd DDTS System Generated Document | Generated on: {{ now()->format('F d, Y h:i:s A') }} | By: {{ auth()->user()->name }}";
+                content: "Generated on: {{ now()->format('F d, Y h:i:s A') }} | By: {{ auth()->user()->name }}";
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 8pt;
                 color: #555;
@@ -138,7 +138,7 @@
         <!-- Header Block -->
         <div class="text-center mb-3 border-bottom pb-2">
             <h4 class="fw-bold text-uppercase mb-1" style="letter-spacing: 0.5px;">Division Document Tracking System
-                (DDTS)</h4>
+                (DTS)</h4>
             <h5 class="fw-bold text-primary mb-0">DOCUMENT TRANSMITTAL SLIP</h5>
             <span class="small text-muted">{{ auth()->user()->office->name ?? 'N/A' }}</span>
         </div>
@@ -151,7 +151,7 @@
                     <th style="width: 130px;">Category</th>
                     <th>Subject Matter</th>
                     <th style="width: 220px;">Destination Office</th>
-                    <th style="width: 220px;">Name,Date & Signature</th>
+                    <th style="width: 220px;">Name/Date & Signature</th>
                 </tr>
             </thead>
             <tbody>
