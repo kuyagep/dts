@@ -33,7 +33,7 @@ class VerifyEmailController extends Controller
             $request->session()->regenerateToken();
 
             $statusMessage = match ($user->status) {
-                'pending' => 'Email verified successfully! However, your account is still pending administrator approval.',
+                'pending' => 'Email verified successfully! However, your account is still pending wait for admin approval.',
                 'deactivated' => 'Email verified, but your account has been deactivated. Please contact your administrator.',
                 default => 'Your account is not authorized to access the system.',
             };
