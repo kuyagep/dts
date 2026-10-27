@@ -76,6 +76,7 @@
                                     </a>
                                 </td>
 
+
                                 <!-- Title & Type -->
                                 <td>
                                     <div class="fw-bold text-dark">{{ Str::limit($doc->title, 40) }}</div>
