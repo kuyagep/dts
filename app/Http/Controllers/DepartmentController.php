@@ -17,6 +17,7 @@ class DepartmentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'code' => 'required|string|max:255',
         ]);
 
         Department::create($validated);
