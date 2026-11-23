@@ -122,18 +122,28 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $receiveImmediately = $request->input('action') === 'save_and_receive';
+
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'document_type_id' => 'required|exists:document_types,id',
             'priority' => 'required|in:Normal,Urgent,Immediate',
-            'destination_office_id' => 'required|exists:offices,id',
+            // Destination office is only required if NOT receiving immediately
+            'destination_office_id' => $receiveImmediately ? 'nullable|exists:offices,id' : 'required|exists:offices,id',
             'description' => 'nullable|string',
             'remarks' => 'nullable|string|max:500',
         ]);
 
-        $user = auth()->user();
 
-        DB::transaction(function () use ($validated, $user, $request, &$document) {
+
+        DB::transaction(function () use ($validated, $user, $request, $receiveImmediately, &$document) {
+            $targetOfficeId = $receiveImmediately
+                ? $user->office_id
+                : $validated['destination_office_id'];
+            $status = $receiveImmediately ? 'Received' : 'In Transit';
+
             $trackingNumber = now()->format('ym') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
 
             $document = Document::create([
@@ -142,10 +152,10 @@ class DocumentController extends Controller
                 'document_type_id' => $validated['document_type_id'],
                 'description' => $validated['description'] ?? null,
                 'priority' => $validated['priority'],
-                'status' => 'In Transit',
+                'status' => $status,
                 'originating_office_id' => $user->office_id,
                 'current_office_id' => $user->office_id,
-                'destination_office_id' => $validated['destination_office_id'],
+                'destination_office_id' =>  $targetOfficeId,
                 'created_by' => $user->id,
                 'current_custodian_id' => $user->id,
             ]);
@@ -154,7 +164,7 @@ class DocumentController extends Controller
             DocumentRoute::create([
                 'document_id' => $document->id,
                 'from_office_id' => $user->office_id,
-                'to_office_id' => $validated['destination_office_id'],
+                'to_office_id' => $targetOfficeId,
                 'status' => 'In Transit',
                 'remarks' => $validated['remarks'] ?? 'Document created and dispatched.',
             ]);
@@ -162,11 +172,13 @@ class DocumentController extends Controller
             DocumentLog::create([
                 'document_id' => $document->id,
                 'user_id' => $user->id,
-                'action' => 'CREATED',
+                'action' => $receiveImmediately ? 'Created & Received' : 'Created & Routed',
                 'from_status' => 'Draft',
                 'to_status' => 'In Transit',
                 'office_id'   => $user->office_id,
-                'remarks' => $validated['remarks'] ?? 'Document generated and routed.',
+                'remarks' => $receiveImmediately
+                    ? 'Document encoded and immediately received at originating office.'
+                    : 'Document created and routed to destination office.',
                 'ip_address' => $request->ip(),
             ]);
 
@@ -179,10 +191,25 @@ class DocumentController extends Controller
                 $receivingOfficeUsers,
                 new DocumentStatusChangedNotification($document, 'incoming', $user)
             );
+
+
+            // Only dispatch Incoming notification if routed to another office
+            if (!$receiveImmediately && $document->current_office_id) {
+                $receivingUsers = User::where('office_id', $document->current_office_id)
+                    ->where('status', 'approved')
+                    ->get();
+
+                Notification::send(
+                    $receivingUsers,
+                    new DocumentStatusChangedNotification($document, 'incoming', $user)
+                );
+            }
         });
 
         return redirect()->route('documents.show', $document->id)
-            ->with('success', "Document {$document->tracking_number} created successfully!");
+            ->with('success', $receiveImmediately
+                ? 'Document created and marked as Received.'
+                : 'Document created and routed to destination office.');
     }
 
 
@@ -373,7 +400,7 @@ class DocumentController extends Controller
             );
         });
 
-        return redirect()->route('documents.index')->with('success', "Document {$document->tracking_number} dispatched successfully.");
+        return redirect()->route('documents.pending')->with('success', "Document {$document->tracking_number} dispatched successfully.");
     }
 
     /**

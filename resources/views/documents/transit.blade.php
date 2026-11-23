@@ -159,17 +159,19 @@
 
                                 <!-- Action -->
                                 <td class="text-end pe-3">
-                                    <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-primary"
-                                        title="Track Document">
-                                        <i class="fa-solid fa-qrcode"></i>
-                                    </a>
-                                    @if (auth()->user()->hasAnyRole(['SuperAdmin', 'Admin']) ||
-                                            ($doc->created_by === auth()->id() && in_array($doc->status, ['Draft', 'Pending', 'In Transit'])))
-                                        <a href="{{ route('documents.edit', $doc->id) }}" class="btn btn-sm btn-warning"
-                                            title="Edit Document">
-                                            <i data-feather="edit-2" class="feather-xs"></i>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-primary"
+                                            title="Track Document">
+                                            <i class="fa-solid fa-qrcode"></i>
                                         </a>
-                                    @endif
+                                        @if (auth()->user()->hasAnyRole(['SuperAdmin', 'Admin']) ||
+                                                ($doc->created_by === auth()->id() && in_array($doc->status, ['Draft', 'Pending', 'In Transit'])))
+                                            <a href="{{ route('documents.edit', $doc->id) }}"
+                                                class="btn btn-sm btn-warning" title="Edit Document">
+                                                <i data-feather="edit-2" class="feather-xs"></i>
+                                            </a>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty

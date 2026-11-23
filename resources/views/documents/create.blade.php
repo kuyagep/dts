@@ -114,11 +114,21 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                            <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg">Cancel</a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="align-middle me-1" data-feather="send"></i> Save & Route Document
-                            </button>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-top pt-3">
+                            <a href="{{ route('documents.index') }}" class="btn btn-light">Cancel</a>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <!-- Standard Create / Route Button -->
+                                <button type="submit" name="action" value="save" class="btn btn-primary px-4 shadow-sm">
+                                    <i data-feather="send" class="feather-sm me-1"></i> Create & Route Document
+                                </button>
+
+                                <!-- Create & Immediately Receive Button -->
+                                <button type="submit" name="action" value="save_and_receive"
+                                    class="btn btn-success px-4 shadow-sm">
+                                    <i data-feather="inbox" class="feather-sm me-1"></i> Create & Receive Now
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -126,3 +136,18 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const receiveNowBtn = document.querySelector('button[value="save_and_receive"]');
+            const destSelect = document.getElementById('destination_office_id');
+
+            if (receiveNowBtn && destSelect) {
+                receiveNowBtn.addEventListener('click', function() {
+                    // Remove required attribute if user intends to receive it directly at their own desk
+                    destSelect.removeAttribute('required');
+                });
+            }
+        });
+    </script>
+@endpush
