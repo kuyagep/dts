@@ -189,19 +189,46 @@ class DocumentController extends Controller
     /**
      * Display pending documents for current office queue.
      */
-    public function pending()
+
+
+    public function pending(Request $request)
     {
         $user = auth()->user();
+        $search = $request->input('search');
+        $typeId = $request->input('document_type_id');
 
-        $documents = Document::where('current_office_id', $user->office_id)
-            ->whereIn('status', ['Received', 'In Review'])
-            ->with(['documentType', 'originatingOffice', 'currentCustodian'])
+        $documents = Document::with(['documentType', 'originatingOffice', 'currentCustodian'])
+            ->whereIn('status', ['Received', 'In Review']) // Adjust if your status casing is 'Pending'
+            // Scope to user's office unless SuperAdmin/Admin (keep your existing office scope here)
+            ->when(!$user->hasAnyRole(['SuperAdmin', 'Admin']), function ($query) use ($user) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('current_office_id', $user->office_id)
+                        ->orWhere('originating_office_id', $user->office_id);
+                });
+            })
+            // Search Filter
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('tracking_number', 'like', "%{$search}%")
+                        ->orWhere('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhereHas('originatingOffice', function ($officeQuery) use ($search) {
+                            $officeQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('code', 'like', "%{$search}%");
+                        });
+                });
+            })
+            // Optional Document Type Filter
+            ->when($typeId, function ($query, $typeId) {
+                $query->where('document_type_id', $typeId);
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString(); // Keeps ?search= and ?document_type_id= when clicking pagination links
 
+        $documentTypes = DocumentType::where('is_active', true)->orderBy('name')->get();
         $offices = Office::where('is_active', true)->orderBy('name')->get();
-
-        return view('documents.pending', compact('documents', 'offices'));
+        return view('documents.pending', compact('documents', 'documentTypes', 'search', 'typeId', 'offices'));
     }
 
     /**

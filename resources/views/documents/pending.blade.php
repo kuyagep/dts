@@ -15,6 +15,49 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            <form action="{{ route('documents.pending') }}" method="GET" class="row g-2 align-items-center mb-3">
+                <!-- Search Input -->
+                <div class="col-12 col-md-6 col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i data-feather="search" class="feather-sm text-muted"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-start-0 ps-0"
+                            placeholder="Search tracking #, title, or office..." value="{{ request('search') }}">
+                        @if (request('search'))
+                            <a href="{{ route('documents.pending', array_filter(['document_type_id' => request('document_type_id')])) }}"
+                                class="btn btn-outline-secondary" title="Clear Search">
+                                <i data-feather="x" class="feather-sm"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Optional Document Type Dropdown Filter -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <select name="document_type_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Document Types</option>
+                        @foreach ($documentTypes as $type)
+                            <option value="{{ $type->id }}"
+                                {{ request('document_type_id') == $type->id ? 'selected' : '' }}>
+                                {{ $type->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Submit / Reset Buttons -->
+                <div class="col-12 col-sm-6 col-md-2 col-lg-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-3">
+                        Search
+                    </button>
+                    @if (request('search') || request('document_type_id'))
+                        <a href="{{ route('documents.pending') }}" class="btn btn-outline-secondary">
+                            Reset
+                        </a>
+                    @endif
+                </div>
+            </form>
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">
@@ -54,7 +97,8 @@
 
                                 <!-- Origin Office -->
                                 <td>
-                                    <span class="small font-weight-bold">{{ $doc->originatingOffice->code ?? 'N/A' }}</span>
+                                    <span
+                                        class="small font-weight-bold">{{ $doc->originatingOffice->code ?? 'N/A' }}</span>
                                 </td>
 
                                 <!-- Custodian -->
@@ -152,7 +196,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-light"
                                                             data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-primary">Dispatch
+                                                        <button type="submit" class="btn btn-primary">Forward
                                                             Document</button>
                                                     </div>
                                                 </form>
@@ -161,8 +205,8 @@
                                     </div>
 
                                     <!-- Modal: Release Document -->
-                                    <div class="modal fade text-start" id="releaseModal-{{ $doc->id }}" tabindex="-1"
-                                        aria-hidden="true">
+                                    <div class="modal fade text-start" id="releaseModal-{{ $doc->id }}"
+                                        tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <form action="{{ route('documents.release', $doc->id) }}" method="POST">
