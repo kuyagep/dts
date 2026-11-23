@@ -167,7 +167,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="8" class="text-center py-5 text-muted">
                                     <i data-feather="send" class="mb-2" style="width: 40px; height: 40px;"></i>
                                     <p class="mb-0">No documents currently in transit from your office.</p>
                                 </td>
