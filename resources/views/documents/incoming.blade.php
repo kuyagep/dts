@@ -25,7 +25,7 @@
                             <th class="ps-3">Tracking Number</th>
                             <th>Subject Matter</th>
                             <th>Origin Office</th>
-                            <th>Dispatched By</th>
+                            <th>Forwarded By</th>
                             <th>Urgency</th>
                             <th>Date Forwarded</th>
                             <th class="text-end pe-3">Actions</th>
@@ -83,19 +83,18 @@
 
                                 <!-- Actions -->
                                 <td class="text-end pe-3">
-                                    <div class="btn-group">
-                                        <a href="{{ route('documents.show', $doc->id) }}"
-                                            class="btn btn-sm btn-outline-secondary" title="View Details">
-                                            <i class="fa-solid fa-qrcode"></i> View
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-secondary"
+                                            title="View Details">
+                                            <i class="fa-solid fa-qrcode me-1"></i> View
                                         </a>
 
                                         <!-- Receive Button (Triggers Intake Modal with Remarks) -->
-                                        <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
                                             data-bs-target="#receiveModal-{{ $doc->id }}"
                                             title="Receive with Remarks">
-                                            <i data-feather="inbox" class="feather-sm me-1"></i> Receive...
+                                            <i data-feather="inbox" class="feather-sm me-1"></i> Receive
                                         </button>
-
                                     </div>
 
                                     <!-- Receive Confirmation Modal -->
@@ -172,34 +171,7 @@
             </div>
         @endif
     </div>
-
-
 @endsection
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.accept-doc-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = this.closest('.accept-doc-form');
-
-                    Swal.fire({
-                        title: 'Accept Document?',
-                        text: "Confirm receipt of this document into your office queue.",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#198754',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Yes, Accept',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
 @endpush

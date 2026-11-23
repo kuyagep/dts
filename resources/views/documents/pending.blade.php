@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h1 class="h3 mb-0">Pending Documents Queue</h1>
+            <h1 class="h3 mb-0">Pending Documents</h1>
             <p class="text-muted mb-0">
                 Documents currently held by <strong>{{ auth()->user()->office->name ?? 'Your Office' }}</strong> requiring
                 action.
@@ -80,24 +80,24 @@
 
                                 <!-- Action Buttons -->
                                 <td class="text-end pe-3">
-                                    <div class="btn-group">
+                                    <div class="d-flex flex-wrap gap-1">
                                         <!-- Inspect -->
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View Details">
-                                            <i class="fa-solid fa-qrcode"></i>
+                                            <i class="fa-solid fa-qrcode"></i> Track
                                         </a>
-
 
                                         <!-- Forward Modal Trigger -->
                                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#forwardModal-{{ $doc->id }}" title="Forward Document">
                                             <i data-feather="send" class="feather-sm me-1"></i> Forward
                                         </button>
-                                        <!-- Complete / File Modal Trigger (NEW) -->
+
+                                        <!-- Complete / File Modal Trigger -->
                                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
                                             data-bs-target="#completeModal-{{ $doc->id }}"
                                             title="Mark as Completed / Filed">
-                                            <i data-feather="check-circle" class="feather-sm me-1"></i> Complete / File
+                                            <i data-feather="check-circle" class="feather-sm me-1"></i> File
                                         </button>
 
                                         <!-- Release Modal Trigger -->

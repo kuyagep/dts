@@ -99,10 +99,10 @@
                             <th class="ps-3">Tracking Number</th>
                             <th>Subject Matter</th>
                             <th>Destination Office</th>
-                            <th>Dispatched By</th>
+                            <th>Forwarded by</th>
                             <th>Current Status</th>
                             <th>Date Dispatched</th>
-                            <th class="text-end pe-3">Actions</th>
+                            <th class="text-end pe-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,12 +157,19 @@
                                     <small class="text-muted">{{ $doc->updated_at->format('M d, Y h:i A') }}</small>
                                 </td>
 
-                                <!-- Actions -->
+                                <!-- Action -->
                                 <td class="text-end pe-3">
-                                    <a href="{{ route('documents.show', $doc->id) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="fa-solid fa-qrcode"></i> Track
+                                    <a href="{{ route('documents.show', $doc->id) }}" class="btn btn-sm btn-primary"
+                                        title="Track Document">
+                                        <i class="fa-solid fa-qrcode"></i>
                                     </a>
+                                    @if (auth()->user()->hasAnyRole(['SuperAdmin', 'Admin']) ||
+                                            ($doc->created_by === auth()->id() && in_array($doc->status, ['Draft', 'Pending', 'In Transit'])))
+                                        <a href="{{ route('documents.edit', $doc->id) }}" class="btn btn-sm btn-warning"
+                                            title="Edit Document">
+                                            <i data-feather="edit-2" class="feather-xs"></i>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

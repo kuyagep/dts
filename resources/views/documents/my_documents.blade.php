@@ -63,7 +63,7 @@
                             <th>Current Office</th>
                             <th>Status</th>
                             <th>Date Created</th>
-                            <th class="text-end pe-3">Actions</th>
+                            <th class="text-end pe-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +146,13 @@
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="fa-solid fa-qrcode"></i> Track
                                     </a>
+                                    @if (auth()->user()->hasAnyRole(['SuperAdmin', 'Admin']) ||
+                                            ($doc->created_by === auth()->id() && in_array($doc->status, ['Draft', 'Pending', 'In Transit'])))
+                                        <a href="{{ route('documents.edit', $doc->id) }}"
+                                            class="btn btn-sm btn-outline-warning" title="Edit Document">
+                                            <i data-feather="edit-2" class="feather-xs"></i>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                             @empty

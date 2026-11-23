@@ -602,14 +602,18 @@ class DocumentController extends Controller
      */
     public function edit(Document $document)
     {
-        // Ensure the user owns the document or belongs to the current custodian office
-        if ($document->creator_id !== auth()->id() && $document->current_office_id !== auth()->user()->office_id) {
-            abort(403, 'Unauthorized access to edit this document.');
+        $user = auth()->user();
+
+        // Prevent regular users from editing once received or completed
+        if (!$user->hasAnyRole(['SuperAdmin', 'Admin'])) {
+            if ($document->created_by !== $user->id || in_array($document->status, ['received', 'completed'])) {
+                return redirect()->route('documents.show', $document->id)
+                    ->with('error', 'You can no longer edit this document because it has already been received or completed.');
+            }
         }
 
-        $documentTypes = \App\Models\DocumentType::all();
+        $documentTypes = DocumentType::where('is_active', true)->orderBy('name')->get();
         $offices = Office::orderBy('name')->get(); // Pass offices to view
-
         return view('documents.edit', compact('document', 'documentTypes', 'offices'));
     }
 

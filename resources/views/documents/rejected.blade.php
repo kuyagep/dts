@@ -104,7 +104,7 @@
 
                                 <!-- Actions -->
                                 <td class="text-end pe-3">
-                                    <div class="btn-group">
+                                    <div class="d-flex flex-wrap gap-1">
                                         <a href="{{ route('documents.show', $doc->id) }}"
                                             class="btn btn-sm btn-outline-secondary" title="View History">
                                             <i class="fa-solid fa-qrcode"></i>
