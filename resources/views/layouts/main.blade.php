@@ -113,7 +113,7 @@
 
                 $('#document_type_id').select2({
                     theme: 'bootstrap-5',
-                    placeholder: 'Select destination office...',
+                    placeholder: 'Select document type...',
                     allowClear: true,
                     width: '100%'
                 });
