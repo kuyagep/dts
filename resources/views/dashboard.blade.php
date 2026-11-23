@@ -50,7 +50,7 @@
                                         class="text-danger">*</span></label>
                                 <select class="form-select @error('document_type_id') is-invalid @enderror"
                                     id="document_type_id" name="document_type_id" required>
-                                    <option value="" disabled selected>Choose document classification...</option>
+                                    <option value="" disabled selected>Choose document type...</option>
                                     @foreach ($documentTypes as $type)
                                         <option value="{{ $type->id }}"
                                             {{ old('document_type_id') == $type->id ? 'selected' : '' }}>
