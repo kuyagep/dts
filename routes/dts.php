@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Forwarding & Approving Documents (Requires 'documents.approve' permission)
 
+        Route::get('/released', [DocumentController::class, 'released'])->name('released');
+
         Route::post('/{document}/forward', [DocumentController::class, 'forward'])->name('forward');
         Route::post('/{document}/approve', [DocumentController::class, 'approve'])->name('approve');
         Route::post('/{document}/archive', [DocumentController::class, 'archive'])->name('archive');

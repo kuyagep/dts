@@ -183,12 +183,10 @@
             </tbody>
         </table>
 
-
-
         <!-- On-Screen Preview Footer -->
         <div class="screen-footer d-flex justify-content-between align-items-center no-print">
             <div>
-                <strong>System Generated Document</strong> |
+                <strong>Generated on</strong> |
                 {{ now()->format('F d, Y h:i:s A') }} | By: {{ auth()->user()->name }}
             </div>
             <div>

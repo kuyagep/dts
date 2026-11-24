@@ -89,6 +89,53 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            <form action="{{ route('documents.transit') }}" method="GET" class="row g-2 align-items-center mb-3">
+                <!-- Search Input -->
+                <div class="col-12 col-md-5 col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i data-feather="search" class="feather-sm text-muted"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control form-control-lg border-start-0 ps-0"
+                            placeholder="Search tracking #, title, or description..." value="{{ request('search') }}">
+                        @if (request('search'))
+                            <a href="{{ route('documents.transit', array_filter(['office_id' => request('office_id')])) }}"
+                                class="btn btn-outline-secondary" title="Clear Search">
+                                <i data-feather="x" class="feather-sm"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Destination Office / Department Filter -->
+                <div class="col-12 col-sm-7 col-md-4 col-lg-4">
+                    <select name="office_id" id="filter_office_id" class="form-select select2-office"
+                        onchange="this.form.submit()">
+                        <option value="">All Destination Offices / Departments</option>
+                        @foreach ($offices as $office)
+                            @if ($office->id !== auth()->user()->office_id)
+                                <option value="{{ $office->id }}"
+                                    {{ request('office_id') == $office->id ? 'selected' : '' }}>
+                                    {{ $office->name }} ({{ $office->code }})
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Filter & Reset Buttons -->
+                <div class="col-12 col-sm-5 col-md-3 col-lg-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        Search
+                    </button>
+                    @if (request('search') || request('office_id'))
+                        <a href="{{ route('documents.transit') }}" class="btn btn-outline-secondary"
+                            title="Reset Filters">
+                            Reset
+                        </a>
+                    @endif
+                </div>
+            </form>
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">
@@ -136,7 +183,8 @@
 
                                 <!-- Destination Office -->
                                 <td>
-                                    <span class="fw-semibold text-dark">{{ $doc->destinationOffice->name ?? 'N/A' }}</span>
+                                    <span
+                                        class="fw-semibold text-dark">{{ $doc->destinationOffice->name ?? 'N/A' }}</span>
                                     <small class="text-muted d-block">({{ $doc->destinationOffice->code ?? '-' }})</small>
                                 </td>
 

@@ -286,6 +286,109 @@ class DocumentController extends Controller
 
         return redirect()->route('documents.pending')->with('success', "Document {$document->tracking_number} released successfully.");
     }
+
+
+    public function released(Request $request)
+    {
+        $user = auth()->user();
+        $search = $request->input('search');
+        $officeId = $request->input('office_id');
+
+        $offices = Office::where('is_active', true)->orderBy('name')->get();
+
+        // Fetch ONLY documents released by the current user's office
+        $documents = Document::where(function ($query) use ($user) {
+            // 1. Document is currently marked 'Released' while under the user's office
+            $query->where(function ($q) use ($user) {
+                $q->where('status', 'Released')
+                    ->where('current_office_id', $user->office_id);
+            })
+                // 2. OR the user's office recorded a 'Released' route action on the document
+                ->orWhereHas('routes', function ($routeQuery) use ($user) {
+                    $routeQuery->where('from_office_id', $user->office_id)
+                        ->where('status', 'Released');
+                });
+        })
+            // Search by tracking number, title, or description
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('tracking_number', 'like', "%{$search}%")
+                        ->orWhere('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            // Filter by destination / current office
+            ->when($officeId, function ($query, $officeId) {
+                $query->where('current_office_id', $officeId);
+            })
+            ->with([
+                'documentType',
+                'originatingOffice',
+                'currentOffice',
+                'creator',
+                'routes' => function ($q) use ($user) {
+                    $q->where('from_office_id', $user->office_id)
+                        ->where('status', 'Released')
+                        ->with('toOffice')
+                        ->latest();
+                },
+            ])
+            ->latest('updated_at')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('documents.released', compact('documents', 'offices', 'search', 'officeId'));
+    }
+
+    public function printReleasedTransmittal(Request $request)
+    {
+        $request->validate([
+            'document_ids' => ['required', 'array', 'min:1'],
+            'document_ids.*' => ['required', 'exists:documents,id'],
+        ], [
+            'document_ids.required' => 'Please select at least one released document to print a transmittal.',
+        ]);
+
+        $user = auth()->user();
+
+        // Fetch only the selected documents that were released by the current user's office
+        $documents = Document::whereIn('id', $request->document_ids)
+            ->where(function ($query) use ($user) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('status', 'Released')
+                        ->where('current_office_id', $user->office_id);
+                })
+                    ->orWhereHas('routes', function ($routeQuery) use ($user) {
+                        $routeQuery->where('from_office_id', $user->office_id)
+                            ->where('status', 'Released');
+                    });
+            })
+            ->with([
+                'documentType',
+                'originatingOffice',
+                'currentOffice',
+                'routes' => function ($q) use ($user) {
+                    $q->where('from_office_id', $user->office_id)
+                        ->where('status', 'Released')
+                        ->with('toOffice')
+                        ->latest();
+                },
+            ])
+            ->orderBy('tracking_number')
+            ->get();
+
+        if ($documents->isEmpty()) {
+            return redirect()->route('documents.released')
+                ->with('error', 'No valid released documents were found for your selection.');
+        }
+
+        return view('documents.print-transmittal', [
+            'documents' => $documents,
+            'senderOffice' => $user->office,
+            'preparedBy' => $user,
+            'transmittalNo' => 'TRN-' . now()->format('Ymd-His'),
+        ]);
+    }
     /**
      * Show document details, routing path, and audit log.
      */
@@ -508,22 +611,38 @@ class DocumentController extends Controller
     /**
      * Display list of documents currently in transit dispatched by the user's office.
      */
-    public function transit()
+    public function transit(Request $request)
     {
         $user = auth()->user();
+        $search = $request->input('search');
+        $officeId = $request->input('office_id');
 
         $offices = Office::where('is_active', true)->orderBy('name')->get();
+
         // Fetch documents where the active route from the user's office is 'In Transit'
         $documents = Document::where('status', 'In Transit')
             ->whereHas('routes', function ($query) use ($user) {
                 $query->where('from_office_id', $user->office_id)
                     ->where('status', 'In Transit');
             })
+            // Search by tracking number, title, or description
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('tracking_number', 'like', "%{$search}%")
+                        ->orWhere('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            // Filter by destination office / department
+            ->when($officeId, function ($query, $officeId) {
+                $query->where('current_office_id', $officeId);
+            })
             ->with(['documentType', 'currentOffice', 'creator'])
             ->latest()
-            ->paginate(200);
+            ->paginate(200)
+            ->withQueryString(); // Preserves search & office filters across pagination links
 
-        return view('documents.transit', compact('documents', 'offices'));
+        return view('documents.transit', compact('documents', 'offices', 'search', 'officeId'));
     }
 
     /**

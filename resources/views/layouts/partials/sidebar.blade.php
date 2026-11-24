@@ -119,7 +119,12 @@
                     @endif
                 </a>
             </li>
-
+            <li class="sidebar-item {{ request()->routeIs('documents.released') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('documents.released') }}">
+                    <i class="align-middle" data-feather="external-link"></i>
+                    <span class="align-middle">Released</span>
+                </a>
+            </li>
             <li class="sidebar-item {{ request()->routeIs('documents.forwarded') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('documents.forwarded') }}">
                     <i class="align-middle" data-feather="send"></i>
