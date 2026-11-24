@@ -521,7 +521,7 @@ class DocumentController extends Controller
             })
             ->with(['documentType', 'currentOffice', 'creator'])
             ->latest()
-            ->paginate(50);
+            ->paginate(200);
 
         return view('documents.transit', compact('documents', 'offices'));
     }
