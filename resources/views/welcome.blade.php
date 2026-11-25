@@ -263,7 +263,7 @@
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
             <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header text-white" style="background-color: var(--deped-navy);">
+                <div class="modal-header text-white">
                     <h5 class="modal-title fw-bold fs-6 fs-sm-5" id="systemInfoModalLabel">
                         <i data-feather="help-circle" class="me-1"></i> Account Access Notice
                     </h5>
