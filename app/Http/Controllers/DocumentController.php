@@ -250,7 +250,7 @@ class DocumentController extends Controller
                 $query->where('document_type_id', $typeId);
             })
             ->latest()
-            ->paginate(10)
+            ->paginate(100)
             ->withQueryString(); // Keeps ?search= and ?document_type_id= when clicking pagination links
 
         $documentTypes = DocumentType::where('is_active', true)->orderBy('name')->get();
