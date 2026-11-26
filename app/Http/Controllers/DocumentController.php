@@ -55,7 +55,7 @@ class DocumentController extends Controller
                 $q->where('to_office_id', $userOfficeId)->where('status', 'In Transit');
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(100);
 
         return view('documents.incoming', compact('documents'));
     }
