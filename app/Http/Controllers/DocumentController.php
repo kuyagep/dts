@@ -165,7 +165,15 @@ class DocumentController extends Controller
                 : $validated['destination_office_id'];
             $status = $receiveImmediately ? 'Received' : 'In Transit';
 
-            $trackingNumber = now()->format('ym') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            $prefix = now()->format('ym') . '-';
+            $attempts = 0;
+
+            do {
+                $digits = $attempts > 15 ? 5 : 4;
+                $max = (int) str_repeat('9', $digits);
+                $trackingNumber = $prefix . str_pad(random_int(1, $max), $digits, '0', STR_PAD_LEFT);
+                $attempts++;
+            } while (Document::where('tracking_number', $trackingNumber)->exists());
 
             $document = Document::create([
                 'tracking_number' => $trackingNumber,
@@ -848,5 +856,81 @@ class DocumentController extends Controller
 
         return redirect()->route('documents.my-documents')
             ->with('success', 'Document successfully updated and forwarded.');
+    }
+
+
+    public function logs(Request $request)
+    {
+        $user = auth()->user();
+        $search = $request->input('search');
+        $officeId = $request->input('office_id');
+        $action = $request->input('action');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $offices = Office::where('is_active', true)->orderBy('name')->get();
+
+        // Base filtered query shared by statistics and paginated list
+        $baseQuery = DocumentLog::query()
+            ->when(!$user->hasAnyRole(['Admin', 'Super Admin']), function ($query) use ($user) {
+                $query->where('office_id', $user->office_id);
+            })
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('remarks', 'like', "%{$search}%")
+                        ->orWhereHas('document', function ($docQuery) use ($search) {
+                            $docQuery->where('tracking_number', 'like', "%{$search}%")
+                                ->orWhere('title', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($officeId, function ($query, $officeId) {
+                $query->where('office_id', $officeId);
+            })
+            ->when($action, function ($query, $action) {
+                $query->where('action', $action);
+            })
+            ->when($startDate, function ($query, $startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            });
+
+        // Aggregate counts by action in a single SQL query
+        $actionCounts = (clone $baseQuery)
+            ->selectRaw('UPPER(action) as action_type, COUNT(*) as total')
+            ->groupBy('action_type')
+            ->pluck('total', 'action_type');
+
+        $stats = [
+            'total_logs' => $actionCounts->sum(),
+            'today_logs' => (clone $baseQuery)->whereDate('created_at', today())->count(),
+            'created'    => $actionCounts['CREATED'] ?? 0,
+            'received'   => $actionCounts['RECEIVED'] ?? 0,
+            'forwarded'  => ($actionCounts['FORWARDED'] ?? 0) + ($actionCounts['RELEASED'] ?? 0),
+            'completed'  => ($actionCounts['COMPLETED'] ?? 0) + ($actionCounts['APPROVED'] ?? 0),
+            'rejected'   => $actionCounts['REJECTED'] ?? 0,
+        ];
+
+        $logs = (clone $baseQuery)
+            ->with(['document.documentType', 'user', 'office'])
+            ->orderByDesc('created_at')
+            ->paginate(25)
+            ->withQueryString();
+
+        return view('documents.logs', compact(
+            'logs',
+            'offices',
+            'stats',
+            'search',
+            'officeId',
+            'action',
+            'startDate',
+            'endDate'
+        ));
     }
 }

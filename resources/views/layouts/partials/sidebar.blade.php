@@ -212,6 +212,13 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('documents.logs') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('documents.logs') }}">
+                    <i class="align-middle" data-feather="activity"></i>
+                    <span class="align-middle">My Activity</span>
+                </a>
+            </li>
+
             <!-- Section: Master References & System Settings -->
             @hasanyrole('SuperAdmin|Admin')
                 <li class="sidebar-header">

@@ -24,8 +24,8 @@
         <a href="{{ route('documents.create') }}" class="btn btn-success btn-lg shadow-sm" accesskey="n" alt="Alt + N">
             <i class="fa-solid fa-plus me-1"></i> New Document
         </a>
-        <a href="{{ route('documents.transit') }}" class="btn btn-info btn-lg" accesskey="t" alt="Alt + T">
-            <i class="fa-regular fa-paper-plane me-1"></i> In Transit
+        <a href="{{ route('documents.incoming') }}" class="btn btn-info btn-lg" accesskey="t" alt="Alt + T">
+            <i class="fas fa-inbox"></i> Incoming
         </a>
     </div>
     <!-- Main Content Grid -->
@@ -249,6 +249,9 @@
                     </div>
                 </div>
             </div>
+
+            <a href="{{ route('documents.logs') }}" class="btn btn-block btn-lg btn-primary shadow-sm">My
+                Activity</a>
         </div>
     </div>
 @endsection

@@ -5,7 +5,8 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h1 class="h3 mb-0">Document Tracking: <span class="text-primary">{{ $document->tracking_number }}</span></h1>
+            <h1 class="h3 mb-0">Document Tracking: <span class="text-primary fw-bold">{{ $document->tracking_number }}</span>
+            </h1>
             <p class="text-muted mb-0">Created on {{ $document->created_at->format('F d, Y h:i A') }} by
                 {{ $document->creator->name ?? 'System' }}</p>
         </div>
@@ -79,17 +80,17 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label class="text-muted small d-block">Document Title</label>
+                            <dt class="text-muted ">Document Title</dt>
                             <h4 class="fw-bold text-dark mb-0">{{ $document->title }}</h4>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="text-muted small d-block">Document Type</label>
-                            <span class="fw-semibold text-dark">{{ $document->documentType->name ?? 'Unclassified' }}</span>
+                            <dt class="text-muted d-block">Document Type</dt>
+                            <dd class="fw-semibold ">{{ $document->documentType->name ?? 'Unclassified' }}</dd>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="text-muted small d-block">Urgency Level</label>
+                            <dt class="text-muted  d-block">Urgency Level</dt>
                             @if ($document->urgency === 'Immediate')
                                 <span class="badge bg-danger">Immediate</span>
                             @elseif($document->urgency === 'Urgent')
@@ -100,35 +101,34 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="text-muted small d-block">Originating Office</label>
-                            <span class="fw-semibold text-dark">{{ $document->originatingOffice->name ?? 'N/A' }}</span>
+                            <dt class="text-muted d-block">Originating Office</dt>
+                            <dd class="fw-semibold ">{{ $document->originatingOffice->name ?? 'N/A' }}</dd>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="text-muted small d-block">Current Location & Custodian</label>
-                            <span class="fw-semibold text-dark">{{ $document->currentOffice->name ?? 'In Transit' }}</span>
+                            <dt class="text-muted d-block">Current Location</dt>
+                            <dd class="fw-semibold ">{{ $document->currentOffice->name ?? 'In Transit' }}</dd>
                             @if ($document->currentCustodian)
                                 <small class="text-muted d-block">({{ $document->currentCustodian->name }})</small>
                             @endif
                         </div>
 
                         <div class="col-md-12">
-                            <label class="text-muted small d-block">Description / Remarks</label>
-                            <p class="text-dark bg-light p-3 rounded border mb-0">
-                                {{ $document->description ?? 'No specific description provided.' }}
+
+                            <h3 class="h6 text-body-secondary mb-2">Description / Remarks</h3>
+                            <p class="text-body-secondary mb-2">
+                                T {{ $document->description ?? 'No specific description provided.' }}
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-
             <!-- History -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white border-bottom">
-                    <h5 class="card-title mb-0"><i data-feather="list" class="feather-sm me-1 text-primary"></i> Detailed
-                        Audit History</h5>
+                    <h5 class="card-title mb-0"><i data-feather="list" class="feather-sm me-1 text-primary"></i> Document
+                        Logs</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -137,7 +137,7 @@
                                 <tr>
                                     <th class="ps-3">Timestamp</th>
                                     <th>Action Performed</th>
-                                    <th>Actor</th>
+                                    <th>Acted By</th>
                                     <th>Office</th>
                                     <th>Remarks</th>
                                 </tr>

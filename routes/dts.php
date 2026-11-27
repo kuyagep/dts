@@ -27,6 +27,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', [DocumentController::class, 'create'])->name('create');
         Route::post('/', [DocumentController::class, 'store'])->name('store');
 
+        //document lods
+        Route::get('/logs', [DocumentController::class, 'logs'])->name('logs');
 
         // Incoming Queue & Receiving Actions (Requires 'documents.receive' permission)
 
