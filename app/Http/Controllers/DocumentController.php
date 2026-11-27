@@ -50,10 +50,11 @@ class DocumentController extends Controller
         $userOfficeId = auth()->user()->office_id;
 
         $documents = Document::with(['documentType', 'originatingOffice', 'creator'])
+            ->where('destination_office_id', $userOfficeId) //added this to filter only documents for the user's office
             ->where('status', 'In Transit')
-            ->whereHas('routes', function ($q) use ($userOfficeId) {
-                $q->where('to_office_id', $userOfficeId)->where('status', 'In Transit');
-            })
+            // ->whereHas('routes', function ($q) use ($userOfficeId) {
+            //     $q->where('to_office_id', $userOfficeId)->where('status', 'In Transit');
+            // })
             ->latest()
             ->paginate(100);
 
