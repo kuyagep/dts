@@ -15,7 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'DTS'),
 
-    'version' => env('APP_VERSION', '1.6'),
+    'version' => env('APP_VERSION', '1.7'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

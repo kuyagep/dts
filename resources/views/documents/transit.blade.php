@@ -125,7 +125,8 @@
 
                 <!-- Filter & Reset Buttons -->
                 <div class="col-12 col-sm-5 col-md-3 col-lg-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <button type="submit" class="btn btn-primary btn-lg w-100"> <i data-feather="search"
+                            class="search-sm me-1"></i>
                         Search
                     </button>
                     @if (request('search') || request('office_id'))

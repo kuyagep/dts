@@ -45,20 +45,40 @@ class DocumentController extends Controller
     /**
      * Display queue of incoming documents for the user's office.
      */
-    public function incoming()
+    public function incoming(Request $request)
     {
-        $userOfficeId = auth()->user()->office_id;
-
+        $user = auth()->user();
+        $search = $request->input('search');
+        $officeId = $request->input('office_id');
+        $offices = Office::where('is_active', true)->orderBy('name')->get();
         $documents = Document::with(['documentType', 'originatingOffice', 'creator'])
-            ->where('destination_office_id', $userOfficeId) //added this to filter only documents for the user's office
+            ->where('destination_office_id', $user->office_id) //added this to filter only documents for the user's office
             ->where('status', 'In Transit')
             // ->whereHas('routes', function ($q) use ($userOfficeId) {
             //     $q->where('to_office_id', $userOfficeId)->where('status', 'In Transit');
             // })
-            ->latest()
-            ->paginate(100);
+            // Search by tracking number, title, or description
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('tracking_number', 'like', "%{$search}%")
+                        ->orWhere('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            // Filter by sender / originating office
+            ->when($officeId, function ($query, $officeId) {
+                $query->where(function ($q) use ($officeId) {
+                    $q->where('originating_office_id', $officeId)
+                        ->orWhereHas('routes', function ($routeQuery) use ($officeId) {
+                            $routeQuery->where('from_office_id', $officeId)
+                                ->where('status', 'In Transit');
+                        });
+                });
+            })
+            ->latest('updated_at')
+            ->paginate(100)->withQueryString();
 
-        return view('documents.incoming', compact('documents'));
+        return view('documents.incoming', compact('documents', 'offices', 'search', 'officeId'));
     }
 
     /**

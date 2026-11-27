@@ -24,7 +24,7 @@
                         placeholder="Search by tracking number or title..." value="{{ request('search') }}">
                 </div>
                 <div class="col-md-4">
-                    <select name="status" class="form-select">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">-- All Statuses --</option>
                         <option value="Draft" {{ request('status') === 'Draft' ? 'selected' : '' }}>Draft</option>
                         <option value="In Transit" {{ request('status') === 'In Transit' ? 'selected' : '' }}>In Transit
@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-secondary w-100"><i data-feather="filter"
+                    <button type="submit" class="btn btn-primary w-100"><i data-feather="filter"
                             class="feather-sm me-1"></i> Filter</button>
                     @if (request()->hasAny(['search', 'status']))
                         <a href="{{ route('documents.my-documents') }}" class="btn btn-light"><i data-feather="x"
@@ -53,7 +53,7 @@
 
     <!-- Documents Table -->
     <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
+        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">

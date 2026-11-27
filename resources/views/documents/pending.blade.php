@@ -48,7 +48,7 @@
 
                 <!-- Submit / Reset Buttons -->
                 <div class="col-12 col-sm-6 col-md-2 col-lg-4 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary px-3">
+                    <button type="submit" class="btn btn-primary w-100 px-3">
                         Search
                     </button>
                     @if (request('search') || request('document_type_id'))
